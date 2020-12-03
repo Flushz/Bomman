@@ -1,0 +1,14 @@
+name		bomberman3
+filename	bomberman3
+maskcolor	16 0 0 0
+maskcolor	32 0 0 0
+alpha		16
+width		32
+height		32
+framewidth	32
+frameheight	64
+framecount	4
+frameorder	0 2 0 1
+framedirs	4
+framestart	1
+framedelay	0.25

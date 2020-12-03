@@ -1,0 +1,14 @@
+name		bombs1
+filename	bombs1
+maskcolor	16 31 0 31
+maskcolor	32 255 0 255
+alpha		256
+width		32
+height		32
+framewidth	32
+frameheight	32
+framecount	4
+frameorder	0 1 2 1
+framedirs	1
+framestart	0
+framedelay	0.25

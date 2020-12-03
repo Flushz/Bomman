@@ -1,0 +1,14 @@
+name		flames
+filename	flames
+maskcolor	16 0 0 0
+maskcolor	32 0 0 0
+alpha		256
+width		32
+height		32
+framewidth	32
+frameheight	32
+framecount	4
+frameorder	0 1 2 3
+framedirs	8
+framestart	0
+framedelay	0.25
