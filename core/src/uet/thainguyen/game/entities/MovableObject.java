@@ -8,13 +8,13 @@ import java.util.HashMap;
 
 public abstract class MovableObject {
 
-    protected Rectangle body;
-    protected HashMap<String, Animation<TextureRegion>> animations;
-    protected float speed;
+    private Rectangle body;
+    private HashMap<String, Animation<TextureRegion>> animationSet;
+    private float speed;
 
     public MovableObject(float posX, float posY, float width, float height, float speed) {
         this.body = new Rectangle(posX, posY, width, height);
-        this.animations = new HashMap<>();
+        this.animationSet = new HashMap<>();
         this.speed = speed;
     }
 
@@ -24,6 +24,14 @@ public abstract class MovableObject {
 
     public float getX() {
         return body.getX();
+    }
+
+    public HashMap<String, Animation<TextureRegion>> getAnimationSet() {
+        return animationSet;
+    }
+
+    public float getSpeed() {
+        return speed;
     }
 
     public float getY() {

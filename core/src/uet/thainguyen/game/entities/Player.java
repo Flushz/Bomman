@@ -15,12 +15,11 @@ public class Player extends MovableObject {
     }
 
     private State currentState;
-
     private boolean isMoving;
 
     public Player(float posX, float posY, float width, float height, float speed) {
         super(posX, posY, width, height, speed);
-        AnimationController.loadPlayerAnimation(animations);
+        AnimationController.loadPlayerAnimation(getAnimationSet());
         currentState = State.IDLING_UP;
         isMoving = false;
     }
@@ -30,19 +29,19 @@ public class Player extends MovableObject {
     }
 
     public void moveUp() {
-        setY(getY() + speed);
+        setY(getY() + getSpeed());
     }
 
     public void moveDown() {
-        setY(getY() - speed);
+        setY(getY() - getSpeed());
     }
 
     public void moveRight() {
-        setX(getX() + speed);
+        setX(getX() + getSpeed());
     }
 
     public void moveLeft() {
-        setX(getX() - speed);
+        setX(getX() - getSpeed());
     }
 
     public void update() {
@@ -91,6 +90,7 @@ public class Player extends MovableObject {
         }
     }
 
+    //if the player is colliding with a static object, then return him to his previous position
     public void returnPreviousPos() {
         switch (currentState) {
             case WALKING_UP:
@@ -109,31 +109,31 @@ public class Player extends MovableObject {
     }
 
     public void render(SpriteBatch spriteBatch, float elapsedTime) {
-        TextureRegion frame = animations.get("idling_down").getKeyFrame(elapsedTime);
+        TextureRegion frame = getAnimationSet().get("idling_down").getKeyFrame(elapsedTime);
         switch (currentState) {
             case WALKING_UP:
-                frame = animations.get("walking_up").getKeyFrame(elapsedTime);
+                frame = getAnimationSet().get("walking_up").getKeyFrame(elapsedTime);
                 break;
             case WALKING_DOWN:
-                frame = animations.get("walking_down").getKeyFrame(elapsedTime);
+                frame = getAnimationSet().get("walking_down").getKeyFrame(elapsedTime);
                 break;
             case WALKING_RIGHT:
-                frame = animations.get("walking_right").getKeyFrame(elapsedTime);
+                frame = getAnimationSet().get("walking_right").getKeyFrame(elapsedTime);
                 break;
             case WALKING_LEFT:
-                frame = animations.get("walking_left").getKeyFrame(elapsedTime);
+                frame = getAnimationSet().get("walking_left").getKeyFrame(elapsedTime);
                 break;
             case IDLING_UP:
-                frame = animations.get("idling_up").getKeyFrame(elapsedTime);
+                frame = getAnimationSet().get("idling_up").getKeyFrame(elapsedTime);
                 break;
             case IDLING_DOWN:
-                frame = animations.get("idling_down").getKeyFrame(elapsedTime);
+                frame = getAnimationSet().get("idling_down").getKeyFrame(elapsedTime);
                 break;
             case IDLING_RIGHT:
-                frame = animations.get("idling_right").getKeyFrame(elapsedTime);
+                frame = getAnimationSet().get("idling_right").getKeyFrame(elapsedTime);
                 break;
             case IDLING_LEFT:
-                frame = animations.get("idling_left").getKeyFrame(elapsedTime);
+                frame = getAnimationSet().get("idling_left").getKeyFrame(elapsedTime);
                 break;
         }
         spriteBatch.draw(frame,getX(), getY());
