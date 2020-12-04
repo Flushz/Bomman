@@ -18,6 +18,10 @@ public abstract class MovableObject {
         this.speed = speed;
     }
 
+    public Rectangle getBody() {
+        return body;
+    }
+
     public float getX() {
         return body.getX();
     }

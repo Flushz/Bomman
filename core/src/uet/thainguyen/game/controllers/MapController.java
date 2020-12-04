@@ -28,6 +28,30 @@ public class MapController {
         renderer = new OrthogonalTiledMapRenderer(tiledMap);
     }
 
+    public void setTiledMap(TiledMap tiledMap) {
+        this.tiledMap = tiledMap;
+    }
+
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
+
+    public void setCamera(OrthographicCamera camera) {
+        this.camera = camera;
+    }
+
+    public TiledMapRenderer getRenderer() {
+        return renderer;
+    }
+
+    public void setRenderer(TiledMapRenderer renderer) {
+        this.renderer = renderer;
+    }
+
+    public TiledMap getTiledMap() {
+        return this.tiledMap;
+    }
+
     public void render() {
         camera.update();
         renderer.setView(camera);
