@@ -6,7 +6,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import uet.thainguyen.game.controllers.AnimationController;
 
+import java.util.ArrayList;
+
 public class Player extends MovableObject {
+
+    private static final float PLAYER_RESPAWN_X = 64;
+    private static final float PLAYER_RESPAWN_Y = 352;
+    private static final float PLAYER_WIDTH = 32;
+    private static final float PLAYER_HEIGHT = 32;
+    private static final float PLAYER_SPEED = 4;
 
     private enum State {
         WALKING_UP, WALKING_DOWN, WALKING_RIGHT, WALKING_LEFT,
@@ -17,11 +25,14 @@ public class Player extends MovableObject {
     private State currentState;
     private boolean isMoving;
 
-    public Player(float posX, float posY, float width, float height, float speed) {
-        super(posX, posY, width, height, speed);
+    private ArrayList<Bomb> bombLeft;
+
+    public Player() {
+        super(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y, PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_SPEED);
         AnimationController.loadPlayerAnimation(getAnimationSet());
-        currentState = State.IDLING_UP;
+        currentState = State.IDLING_DOWN;
         isMoving = false;
+        bombLeft = new ArrayList<>();
     }
 
     public void setCurrentState(State state) {
@@ -65,6 +76,11 @@ public class Player extends MovableObject {
             } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
                 setCurrentState(State.WALKING_LEFT);
                 moveLeft();
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+                System.out.println("Bombed");
+                float bombRespawnPosX = 64;
+                float bombRespawnPosY = 32;
+                bombLeft.add(new Bomb(bombRespawnPosX, bombRespawnPosY));
             }
         } else {
             isMoving = false;
@@ -90,7 +106,7 @@ public class Player extends MovableObject {
         }
     }
 
-    //if the player is colliding with a static object, then return him to his previous position
+    //if the player is colliding with a static object, return him to his previous position
     public void returnPreviousPos() {
         switch (currentState) {
             case WALKING_UP:
@@ -137,5 +153,9 @@ public class Player extends MovableObject {
                 break;
         }
         spriteBatch.draw(frame,getX(), getY());
+
+        for (Bomb bomb : bombLeft) {
+            bomb.draw(spriteBatch, elapsedTime);
+        }
     }
 }

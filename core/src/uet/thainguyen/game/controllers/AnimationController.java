@@ -29,6 +29,10 @@ public class AnimationController {
     private static final int HARE_FRAME_ROWS = 4;
     private static final float HARE_FRAME_DURATION = 0.1f;
 
+    private static final int BOMB_FRAME_COLS = 3;
+    private static final int BOMB_FRAME_ROWS = 5;
+    private static final float BOMB_FRAME_DURATION = 0.15f;
+
     public static void loadPlayerAnimation(HashMap<String, Animation<TextureRegion>> playerAnimations) {
 
         Texture playerTexture = new Texture(Gdx.files.internal("sprites/bomberman1.png"));
@@ -91,8 +95,10 @@ public class AnimationController {
             walkingUpFrames[i] = hareSprites[1][i];
         }
         for (int i = 0; i < 7; i++) {
-            walkingRightFrames[i] = hareSprites[2][i];
-            walkingLeftFrames[i] = hareSprites[3][i];
+            walkingLeftFrames[i] = hareSprites[2][i];
+        }
+        for (int i = 2,j = 0; i < 9; i++, j++) {
+            walkingRightFrames[j] = hareSprites[3][i];
         }
 
         Animation<TextureRegion> walkingLeftAnimation = new Animation<>(HARE_FRAME_DURATION, walkingLeftFrames);
@@ -111,5 +117,24 @@ public class AnimationController {
         hareAnimations.put(WALKING_RIGHT_KEY, walkingRightAnimation);
         hareAnimations.put(WALKING_UP_KEY, walkingUpAnimation);
         hareAnimations.put(WALKING_DOWN_KEY, walkingDownAnimation);
+    }
+
+    public static Animation<TextureRegion> loadBombAnimation() {
+
+        Texture bombTexture = new Texture(Gdx.files.internal("sprites/bombs1.bmp"));
+        TextureRegion[][] bombSprites = TextureRegion.split(bombTexture,
+                bombTexture.getWidth() / BOMB_FRAME_COLS,
+                bombTexture.getHeight() / BOMB_FRAME_ROWS);
+
+        TextureRegion[] burningFrames = new TextureRegion[3];
+
+        for (int i = 0; i < 3; i++) {
+            burningFrames[i] = bombSprites[0][i];
+        }
+
+        Animation<TextureRegion> burningAnimation = new Animation<>(BOMB_FRAME_DURATION, burningFrames);
+        burningAnimation.setPlayMode(PlayMode.LOOP);
+
+        return burningAnimation;
     }
 }
