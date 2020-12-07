@@ -121,7 +121,7 @@ public class AnimationController {
 
     public static Animation<TextureRegion> loadBombAnimation() {
 
-        Texture bombTexture = new Texture(Gdx.files.internal("sprites/bombs1.bmp"));
+        Texture bombTexture = new Texture(Gdx.files.internal("sprites/bombs1.png"));
         TextureRegion[][] bombSprites = TextureRegion.split(bombTexture,
                 bombTexture.getWidth() / BOMB_FRAME_COLS,
                 bombTexture.getHeight() / BOMB_FRAME_ROWS);

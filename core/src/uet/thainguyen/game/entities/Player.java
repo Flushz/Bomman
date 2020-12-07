@@ -16,6 +16,9 @@ public class Player extends MovableObject {
     private static final float PLAYER_HEIGHT = 32;
     private static final float PLAYER_SPEED = 4;
 
+    private static final int TILE_WIDTH = 32;
+    private static final int TILE_HEIGHT = 32;
+
     private enum State {
         WALKING_UP, WALKING_DOWN, WALKING_RIGHT, WALKING_LEFT,
         IDLING_UP, IDLING_DOWN, IDLING_RIGHT, IDLING_LEFT,
@@ -77,14 +80,41 @@ public class Player extends MovableObject {
                 setCurrentState(State.WALKING_LEFT);
                 moveLeft();
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-                System.out.println("Bombed");
-                float bombRespawnPosX = 64;
-                float bombRespawnPosY = 32;
-                bombLeft.add(new Bomb(bombRespawnPosX, bombRespawnPosY));
+                int bombRespawnX = getBombRespawnX();
+                int bombRespawnY = getBombRespawnY();
+                bombLeft.add(new Bomb(bombRespawnX, bombRespawnY));
             }
         } else {
             isMoving = false;
         }
+    }
+
+    // Get bomb respawn X and Y with the condition that the bomb is inside a tile.
+    private int getBombRespawnX() {
+        int leftX = (int) getX();
+        System.out.println(getX());
+        while (leftX % TILE_WIDTH != 0) {
+            leftX--;
+        }
+        int rightX = (int) getX();
+        while (rightX % TILE_WIDTH != 0) {
+            rightX++;
+        }
+        return (getX() - leftX < rightX - getX() ? leftX : rightX);
+    }
+
+    private int getBombRespawnY() {
+        int upY = (int) getY();
+        while (upY % TILE_HEIGHT != 0) {
+            upY++;
+        }
+
+        int downY = (int) getY();
+        while (downY % TILE_HEIGHT != 0) {
+            downY--;
+        }
+
+        return (upY - getY() < getY() - downY ? upY : downY);
     }
 
     private void checkState() {
@@ -125,6 +155,10 @@ public class Player extends MovableObject {
     }
 
     public void render(SpriteBatch spriteBatch, float elapsedTime) {
+        for (Bomb bomb : bombLeft) {
+            bomb.draw(spriteBatch, elapsedTime);
+        }
+
         TextureRegion frame = getAnimationSet().get("idling_down").getKeyFrame(elapsedTime);
         switch (currentState) {
             case WALKING_UP:
@@ -153,9 +187,5 @@ public class Player extends MovableObject {
                 break;
         }
         spriteBatch.draw(frame,getX(), getY());
-
-        for (Bomb bomb : bombLeft) {
-            bomb.draw(spriteBatch, elapsedTime);
-        }
     }
 }

@@ -23,7 +23,7 @@ public class Bomb {
 
     private Animation<TextureRegion> bombAnimation;
 
-    public Bomb(float posX, float posY) {
+    public Bomb(int posX, int posY) {
         body = new Rectangle(posX, posY, BOMB_WIDTH, BOMB_HEIGHT);
         elapsedTime = 0;
         power = 1;
