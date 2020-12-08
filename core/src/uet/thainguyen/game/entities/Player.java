@@ -4,9 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Intersector;
 import uet.thainguyen.game.controllers.AnimationController;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Player extends MovableObject {
 
@@ -61,6 +63,8 @@ public class Player extends MovableObject {
     public void update() {
         handleInput();
         checkState();
+        checkBombState();
+        checkBombBlockMode();
     }
 
     private void handleInput() {
@@ -92,7 +96,6 @@ public class Player extends MovableObject {
     // Get bomb respawn X and Y with the condition that the bomb is inside a tile.
     private int getBombRespawnX() {
         int leftX = (int) getX();
-        System.out.println(getX());
         while (leftX % TILE_WIDTH != 0) {
             leftX--;
         }
@@ -136,6 +139,33 @@ public class Player extends MovableObject {
         }
     }
 
+    //Allow player to move out of the bomb once, after that, there will be a collision detection.
+    private void checkBombBlockMode() {
+        for (Bomb bomb : bombLeft) {
+            if (bomb.getCurrentMode() == Bomb.BlockMode.OFF
+                && !Intersector.overlaps(getBody(), bomb.getBody())) {
+                bomb.setCurrentMode(Bomb.BlockMode.ON);
+            }
+            if (bomb.getCurrentMode() == Bomb.BlockMode.ON
+                && Intersector.overlaps(getBody(), bomb.getBody())) {
+                returnPreviousPos();
+            }
+        }
+    }
+
+    private void checkBombState() {
+        if (!bombLeft.isEmpty()) {
+            Iterator<Bomb> bombIterator = bombLeft.iterator();
+            while (bombIterator.hasNext()) {
+                Bomb bomb = bombIterator.next();
+                bomb.checkState();
+                if (bomb.getCurrentState() == Bomb.State.EXPLODING) {
+                    bombIterator.remove();
+                }
+            }
+        }
+    }
+
     //if the player is colliding with a static object, return him to his previous position
     public void returnPreviousPos() {
         switch (currentState) {
@@ -155,8 +185,10 @@ public class Player extends MovableObject {
     }
 
     public void render(SpriteBatch spriteBatch, float elapsedTime) {
-        for (Bomb bomb : bombLeft) {
-            bomb.draw(spriteBatch, elapsedTime);
+        if (!bombLeft.isEmpty()) {
+            for (Bomb bomb : bombLeft) {
+                bomb.draw(spriteBatch, elapsedTime);
+            }
         }
 
         TextureRegion frame = getAnimationSet().get("idling_down").getKeyFrame(elapsedTime);
@@ -186,6 +218,6 @@ public class Player extends MovableObject {
                 frame = getAnimationSet().get("idling_left").getKeyFrame(elapsedTime);
                 break;
         }
-        spriteBatch.draw(frame,getX(), getY());
+        spriteBatch.draw(frame, getX(), getY());
     }
 }
