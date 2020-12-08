@@ -9,7 +9,9 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import uet.thainguyen.game.controllers.MapController;
@@ -32,11 +34,9 @@ public class PlayScreen implements Screen {
 
         camera = new OrthographicCamera();
         gameMap = new MapController(camera);
-
+        collisionLayer = gameMap.getTiledMap().getLayers().get(3);
         hare = new Hare();
         player = new Player();
-
-        collisionLayer = gameMap.getTiledMap().getLayers().get(3);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class PlayScreen implements Screen {
         elapsedTime += Gdx.graphics.getDeltaTime();
 
         hare.update();
-        player.update();
+        player.update(gameMap);
 
         detectCollisions();
 

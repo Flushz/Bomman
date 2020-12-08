@@ -4,8 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Intersector;
 import uet.thainguyen.game.controllers.AnimationController;
+import uet.thainguyen.game.controllers.MapController;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -60,10 +63,10 @@ public class Player extends MovableObject {
         setX(getX() - getSpeed());
     }
 
-    public void update() {
+    public void update(MapController gameMap) {
         handleInput();
         checkState();
-        checkBombState();
+        checkBombState(gameMap);
         checkBombBlockMode();
     }
 
@@ -153,15 +156,10 @@ public class Player extends MovableObject {
         }
     }
 
-    private void checkBombState() {
+    private void checkBombState(MapController gameMap) {
         if (!bombLeft.isEmpty()) {
-            Iterator<Bomb> bombIterator = bombLeft.iterator();
-            while (bombIterator.hasNext()) {
-                Bomb bomb = bombIterator.next();
-                bomb.checkState();
-                if (bomb.getCurrentState() == Bomb.State.EXPLODING) {
-                    bombIterator.remove();
-                }
+            for (Bomb bomb : bombLeft) {
+                bomb.checkState(gameMap);
             }
         }
     }
@@ -185,9 +183,12 @@ public class Player extends MovableObject {
     }
 
     public void render(SpriteBatch spriteBatch, float elapsedTime) {
-        if (!bombLeft.isEmpty()) {
-            for (Bomb bomb : bombLeft) {
-                bomb.draw(spriteBatch, elapsedTime);
+        Iterator<Bomb> bombIterator = bombLeft.iterator();
+        while (bombIterator.hasNext()) {
+            Bomb bomb = bombIterator.next();
+            bomb.draw(spriteBatch, elapsedTime);
+            if (bomb.getCurrentState() == Bomb.State.EXPLODING) {
+                bombIterator.remove();
             }
         }
 

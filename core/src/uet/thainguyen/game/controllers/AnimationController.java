@@ -19,6 +19,9 @@ public class AnimationController {
     private static final String IDLING_DOWN_KEY = "idling_down";
     private static final String IDLING_RIGHT_KEY = "idling_right";
     private static final String IDLING_LEFT_KEY = "idling_left";
+    private static final String CENTER_KEY = "center";
+    private static final String VERTICAL_KEY = "vertical";
+    private static final String HORIZONTAL_KEY = "horizontal";
 
 
     private static final int PLAYER_FRAME_COLS = 4;
@@ -32,6 +35,10 @@ public class AnimationController {
     private static final int BOMB_FRAME_COLS = 3;
     private static final int BOMB_FRAME_ROWS = 5;
     private static final float BOMB_FRAME_DURATION = 0.15f;
+
+    private static final int FLAME_FRAME_COLS = 4;
+    private static final int FLAME_FRAME_ROWS = 8;
+    private static final float FLAME_FRAME_DURATION = 0.9f;
 
     public static void loadPlayerAnimation(HashMap<String, Animation<TextureRegion>> playerAnimations) {
 
@@ -136,5 +143,35 @@ public class AnimationController {
         burningAnimation.setPlayMode(PlayMode.LOOP);
 
         return burningAnimation;
+    }
+
+    public static void loadFlameAnimations(HashMap<String, Animation<TextureRegion>> flameAnimations) {
+        Texture flameTexture = new Texture(Gdx.files.internal("sprites/flames.png"));
+        TextureRegion[][] flameSprites = TextureRegion.split(flameTexture,
+                flameTexture.getWidth() / FLAME_FRAME_COLS,
+                flameTexture.getHeight() / FLAME_FRAME_ROWS);
+
+        TextureRegion[] centerFrames = new TextureRegion[4];
+        TextureRegion[] verticalFrames = new TextureRegion[4];
+        TextureRegion[] horizontalFrames = new TextureRegion[4];
+
+        for (int i = 0; i < 4; i++) {
+            centerFrames[i] = flameSprites[0][i];
+            verticalFrames[i] = flameSprites[6][i];
+            horizontalFrames[i] = flameSprites[3][i];
+        }
+
+        Animation<TextureRegion> centerAnimation = new Animation<>(FLAME_FRAME_DURATION, centerFrames);
+        centerAnimation.setPlayMode(PlayMode.LOOP);
+
+        Animation<TextureRegion> verticalAnimation = new Animation<>(FLAME_FRAME_DURATION, verticalFrames);
+        verticalAnimation.setPlayMode(PlayMode.LOOP);
+
+        Animation<TextureRegion> horizontalAnimation = new Animation<>(FLAME_FRAME_DURATION, horizontalFrames);
+        horizontalAnimation.setPlayMode(PlayMode.LOOP);
+
+        flameAnimations.put(CENTER_KEY, centerAnimation);
+        flameAnimations.put(VERTICAL_KEY, verticalAnimation);
+        flameAnimations.put(HORIZONTAL_KEY, horizontalAnimation);
     }
 }
