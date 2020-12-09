@@ -41,8 +41,8 @@ public class Bomb extends MovableObject {
     private float elapsedTime;
     private int power;
 
-    private Animation<TextureRegion> bombAnimation;
-    private ArrayList<Flame> flames;
+    private final Animation<TextureRegion> bombAnimation;
+    private final ArrayList<Flame> flames;
 
     public Bomb(int posX, int posY) {
         super(posX, posY, BOMB_WIDTH, BOMB_HEIGHT, 0);
@@ -78,6 +78,10 @@ public class Bomb extends MovableObject {
         this.power = power;
     }
 
+    public ArrayList<Flame> getFlames() {
+        return flames;
+    }
+
     public void checkState(MapController gameMap) {
         this.elapsedTime += Gdx.graphics.getDeltaTime();
 
@@ -102,10 +106,12 @@ public class Bomb extends MovableObject {
 
                 MapObjects collisionObjects = gameMap.getTiledMap().getLayers().get(3).getObjects();
                 for(RectangleMapObject collisionObject : collisionObjects.getByType(RectangleMapObject.class)) {
-                    if (Intersector.overlaps(collisionObject.getRectangle(), horizontalFlame.getBody())) {
+                    if (Intersector.overlaps(collisionObject.getRectangle(), horizontalFlame.getBody())
+                            && collisionObject.getName().equals("Wall")) {
                         flames.remove(horizontalFlame);
                     }
-                    if (Intersector.overlaps(collisionObject.getRectangle(), verticalFlame.getBody())) {
+                    if (Intersector.overlaps(collisionObject.getRectangle(), verticalFlame.getBody())
+                            && collisionObject.getName().equals("Wall")) {
                         flames.remove(verticalFlame);
                     }
                 }

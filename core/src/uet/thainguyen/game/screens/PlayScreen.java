@@ -11,14 +11,22 @@ import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import uet.thainguyen.game.controllers.MapController;
+import uet.thainguyen.game.entities.Bomb;
+import uet.thainguyen.game.entities.Flame;
 import uet.thainguyen.game.entities.Hare;
 import uet.thainguyen.game.entities.Player;
 
+import java.util.ArrayList;
+
 public class PlayScreen implements Screen {
+
+    private static int TILE_WIDTH = 32;
+    private static int TILE_HEIGHT = 32;
 
     SpriteBatch spriteBatch;
     OrthographicCamera camera;
@@ -26,6 +34,7 @@ public class PlayScreen implements Screen {
     MapLayer collisionLayer;
     Hare hare;
     Player player;
+    ArrayList<Bomb> bombs;
 
     private float elapsedTime = 0;
 
@@ -37,6 +46,7 @@ public class PlayScreen implements Screen {
         collisionLayer = gameMap.getTiledMap().getLayers().get(3);
         hare = new Hare();
         player = new Player();
+        bombs = player.getBombs();
     }
 
     @Override
@@ -66,11 +76,39 @@ public class PlayScreen implements Screen {
                 player.returnPreviousPos();
             }
         }
+
+        //Detect collision between flames and player
+        if (!bombs.isEmpty()) {
+            for (Bomb bomb : bombs) {
+                if (bomb.getCurrentState() == Bomb.State.EXPLODING) {
+                    ArrayList<Flame> flames = bomb.getFlames();
+                    for (Flame flame : flames) {
+                        if (Intersector.overlaps(player.getBody(), flame.getBody())) {
+                            player.setCurrentState(Player.State.DYING);
+                        }
+
+                        for(RectangleMapObject collisionObject : collisionObjects.getByType(RectangleMapObject.class)) {
+                            TiledMapTileLayer brickLayer = (TiledMapTileLayer) gameMap.getTiledMap().getLayers().get("Brick");
+                            if (Intersector.overlaps(collisionObject.getRectangle(), flame.getBody())
+                                    && collisionObject.getName().equals("Brick")) {
+                                Cell brickCell = brickLayer.getCell((int) (collisionObject.getRectangle().getX() / TILE_WIDTH),
+                                        (int) (collisionObject.getRectangle().getY() / TILE_HEIGHT));
+                                if (brickCell != null) {
+                                    brickCell.setTile(null);
+                                    collisionObjects.remove(collisionObject);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override
     public void dispose() {
         spriteBatch.dispose();
+        gameMap.getTiledMap().dispose();
     }
 
     @Override

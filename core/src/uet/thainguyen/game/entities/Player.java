@@ -26,16 +26,17 @@ public class Player extends MovableObject {
     private static final int TILE_WIDTH = 32;
     private static final int TILE_HEIGHT = 32;
 
-    private enum State {
+    public enum State {
         WALKING_UP, WALKING_DOWN, WALKING_RIGHT, WALKING_LEFT,
         IDLING_UP, IDLING_DOWN, IDLING_RIGHT, IDLING_LEFT,
         DYING
     }
 
     private State currentState;
+    private int bombLeft;
     private boolean isMoving;
 
-    private ArrayList<Bomb> bombLeft;
+    private ArrayList<Bomb> bombs;
     private ArrayList<Flame> flames;
 
     public Player() {
@@ -43,8 +44,45 @@ public class Player extends MovableObject {
         AnimationController.loadPlayerAnimation(getAnimationSet());
         currentState = State.IDLING_DOWN;
         isMoving = false;
-        bombLeft = new ArrayList<>();
+        bombLeft = 1;
+        bombs = new ArrayList<>();
         flames = new ArrayList<>();
+    }
+
+    public State getCurrentState() {
+        return currentState;
+    }
+
+    public int getBombLeft() {
+        return bombLeft;
+    }
+
+    public void setBombLeft(int bombLeft) {
+        this.bombLeft = bombLeft;
+    }
+
+    public boolean isMoving() {
+        return isMoving;
+    }
+
+    public void setMoving(boolean moving) {
+        isMoving = moving;
+    }
+
+    public ArrayList<Bomb> getBombs() {
+        return bombs;
+    }
+
+    public void setBombs(ArrayList<Bomb> bombs) {
+        this.bombs = bombs;
+    }
+
+    public ArrayList<Flame> getFlames() {
+        return flames;
+    }
+
+    public void setFlames(ArrayList<Flame> flames) {
+        this.flames = flames;
     }
 
     public void setCurrentState(State state) {
@@ -91,9 +129,11 @@ public class Player extends MovableObject {
                 setCurrentState(State.WALKING_LEFT);
                 moveLeft();
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-                int bombRespawnX = getBombRespawnX();
-                int bombRespawnY = getBombRespawnY();
-                bombLeft.add(new Bomb(bombRespawnX, bombRespawnY));
+                if (bombs.size() < bombLeft) {
+                    int bombRespawnX = getBombRespawnX();
+                    int bombRespawnY = getBombRespawnY();
+                    bombs.add(new Bomb(bombRespawnX, bombRespawnY));
+                }
             }
         } else {
             isMoving = false;
@@ -148,7 +188,7 @@ public class Player extends MovableObject {
 
     //Allow player to move out of the bomb once, after that, there will be a collision detection.
     private void checkBombBlockMode() {
-        for (Bomb bomb : bombLeft) {
+        for (Bomb bomb : bombs) {
             if (bomb.getCurrentMode() == Bomb.BlockMode.OFF
                 && !Intersector.overlaps(getBody(), bomb.getBody())) {
                 bomb.setCurrentMode(Bomb.BlockMode.ON);
@@ -161,14 +201,12 @@ public class Player extends MovableObject {
     }
 
     private void checkBombState(MapController gameMap) {
-        if (!bombLeft.isEmpty()) {
-            for (Bomb bomb : bombLeft) {
+        if (!bombs.isEmpty()) {
+            for (Bomb bomb : bombs) {
                 bomb.checkState(gameMap);
             }
         }
     }
-
-
 
     //if the player is colliding with a static object, return him to his previous position
     public void returnPreviousPos() {
@@ -189,7 +227,7 @@ public class Player extends MovableObject {
     }
 
     public void render(SpriteBatch spriteBatch, float elapsedTime) {
-        Iterator<Bomb> bombIterator = bombLeft.iterator();
+        Iterator<Bomb> bombIterator = bombs.iterator();
         while (bombIterator.hasNext()) {
             Bomb bomb = bombIterator.next();
             bomb.draw(spriteBatch);
@@ -224,6 +262,8 @@ public class Player extends MovableObject {
             case IDLING_LEFT:
                 frame = getAnimationSet().get("idling_left").getKeyFrame(elapsedTime);
                 break;
+            case DYING:
+                frame = getAnimationSet().get("dying").getKeyFrame(elapsedTime);
         }
         spriteBatch.draw(frame, getX(), getY());
     }
