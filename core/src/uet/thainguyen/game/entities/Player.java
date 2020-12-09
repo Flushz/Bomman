@@ -5,6 +5,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Intersector;
 import uet.thainguyen.game.controllers.AnimationController;
@@ -34,6 +36,7 @@ public class Player extends MovableObject {
     private boolean isMoving;
 
     private ArrayList<Bomb> bombLeft;
+    private ArrayList<Flame> flames;
 
     public Player() {
         super(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y, PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_SPEED);
@@ -41,6 +44,7 @@ public class Player extends MovableObject {
         currentState = State.IDLING_DOWN;
         isMoving = false;
         bombLeft = new ArrayList<>();
+        flames = new ArrayList<>();
     }
 
     public void setCurrentState(State state) {
@@ -164,6 +168,8 @@ public class Player extends MovableObject {
         }
     }
 
+
+
     //if the player is colliding with a static object, return him to his previous position
     public void returnPreviousPos() {
         switch (currentState) {
@@ -186,8 +192,8 @@ public class Player extends MovableObject {
         Iterator<Bomb> bombIterator = bombLeft.iterator();
         while (bombIterator.hasNext()) {
             Bomb bomb = bombIterator.next();
-            bomb.draw(spriteBatch, elapsedTime);
-            if (bomb.getCurrentState() == Bomb.State.EXPLODING) {
+            bomb.draw(spriteBatch);
+            if (bomb.getCurrentState() == Bomb.State.EXPLODED) {
                 bombIterator.remove();
             }
         }

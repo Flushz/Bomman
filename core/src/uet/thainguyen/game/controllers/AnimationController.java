@@ -19,6 +19,7 @@ public class AnimationController {
     private static final String IDLING_DOWN_KEY = "idling_down";
     private static final String IDLING_RIGHT_KEY = "idling_right";
     private static final String IDLING_LEFT_KEY = "idling_left";
+    private static final String DYING_KEY = "dying";
     private static final String CENTER_KEY = "center";
     private static final String VERTICAL_KEY = "vertical";
     private static final String HORIZONTAL_KEY = "horizontal";
@@ -34,11 +35,11 @@ public class AnimationController {
 
     private static final int BOMB_FRAME_COLS = 3;
     private static final int BOMB_FRAME_ROWS = 5;
-    private static final float BOMB_FRAME_DURATION = 0.15f;
+    private static final float BOMB_FRAME_DURATION = 0.2f;
 
     private static final int FLAME_FRAME_COLS = 4;
     private static final int FLAME_FRAME_ROWS = 8;
-    private static final float FLAME_FRAME_DURATION = 0.9f;
+    private static final float FLAME_FRAME_DURATION = 0.1f;
 
     public static void loadPlayerAnimation(HashMap<String, Animation<TextureRegion>> playerAnimations) {
 
@@ -51,12 +52,14 @@ public class AnimationController {
         TextureRegion[] walkingRightFrames = new TextureRegion[3];
         TextureRegion[] walkingUpFrames = new TextureRegion[3];
         TextureRegion[] walkingDownFrames = new TextureRegion[3];
+        TextureRegion[] dyingFrames = new TextureRegion[3];
 
         for (int i = 0; i < 3; i++) {
             walkingLeftFrames[i] = playerSprites[0][i];
             walkingRightFrames[i] = playerSprites[1][i];
             walkingUpFrames[i] = playerSprites[2][i];
             walkingDownFrames[i] = playerSprites[3][i];
+            dyingFrames[i] = playerSprites[5][i];
         }
 
         Animation<TextureRegion> walkingLeftAnimation = new Animation<>(PLAYER_FRAME_DURATION, walkingLeftFrames);
@@ -71,6 +74,9 @@ public class AnimationController {
         Animation<TextureRegion> walkingDownAnimation = new Animation<>(PLAYER_FRAME_DURATION, walkingDownFrames);
         walkingDownAnimation.setPlayMode(PlayMode.LOOP);
 
+        Animation<TextureRegion> dyingAnimation = new Animation<>(PLAYER_FRAME_DURATION, dyingFrames);
+        dyingAnimation.setPlayMode(PlayMode.NORMAL);
+
         Animation<TextureRegion> idlingUpAnimation = new Animation<>(PLAYER_FRAME_DURATION, walkingUpFrames[0]);
         Animation<TextureRegion> idlingDownAnimation = new Animation<>(PLAYER_FRAME_DURATION, walkingDownFrames[0]);
         Animation<TextureRegion> idlingRightAnimation = new Animation<>(PLAYER_FRAME_DURATION, walkingRightFrames[0]);
@@ -84,6 +90,7 @@ public class AnimationController {
         playerAnimations.put(IDLING_RIGHT_KEY, idlingRightAnimation);
         playerAnimations.put(IDLING_UP_KEY, idlingUpAnimation);
         playerAnimations.put(IDLING_DOWN_KEY, idlingDownAnimation);
+        playerAnimations.put(DYING_KEY, dyingAnimation);
     }
 
     public static void loadHareAnimations(HashMap<String, Animation<TextureRegion>> hareAnimations) {
@@ -157,18 +164,18 @@ public class AnimationController {
 
         for (int i = 0; i < 4; i++) {
             centerFrames[i] = flameSprites[0][i];
-            verticalFrames[i] = flameSprites[6][i];
-            horizontalFrames[i] = flameSprites[3][i];
+            verticalFrames[i] = flameSprites[5][i];
+            horizontalFrames[i] = flameSprites[2][i];
         }
 
         Animation<TextureRegion> centerAnimation = new Animation<>(FLAME_FRAME_DURATION, centerFrames);
-        centerAnimation.setPlayMode(PlayMode.LOOP);
+        centerAnimation.setPlayMode(PlayMode.NORMAL);
 
         Animation<TextureRegion> verticalAnimation = new Animation<>(FLAME_FRAME_DURATION, verticalFrames);
-        verticalAnimation.setPlayMode(PlayMode.LOOP);
+        verticalAnimation.setPlayMode(PlayMode.NORMAL);
 
         Animation<TextureRegion> horizontalAnimation = new Animation<>(FLAME_FRAME_DURATION, horizontalFrames);
-        horizontalAnimation.setPlayMode(PlayMode.LOOP);
+        horizontalAnimation.setPlayMode(PlayMode.NORMAL);
 
         flameAnimations.put(CENTER_KEY, centerAnimation);
         flameAnimations.put(VERTICAL_KEY, verticalAnimation);

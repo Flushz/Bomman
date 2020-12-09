@@ -14,7 +14,6 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import uet.thainguyen.game.controllers.AnimationController;
 import uet.thainguyen.game.controllers.MapController;
-import uet.thainguyen.game.screens.PlayScreen;
 
 import java.util.ArrayList;
 
@@ -29,7 +28,8 @@ public class Bomb extends MovableObject {
 
     public enum State {
         ACTIVATED,
-        EXPLODING
+        EXPLODING,
+        EXPLODED
     }
 
     public enum BlockMode {
@@ -70,12 +70,22 @@ public class Bomb extends MovableObject {
         this.currentMode = currentMode;
     }
 
+    public int getPower() {
+        return this.power;
+    }
+
+    public void setPower(int power) {
+        this.power = power;
+    }
+
     public void checkState(MapController gameMap) {
         this.elapsedTime += Gdx.graphics.getDeltaTime();
 
         if (this.elapsedTime > BOMB_TIME_LIMIT) {
             setCurrentState(State.EXPLODING);
-            generateFlame(gameMap);
+            if (flames.isEmpty()) {
+                generateFlame(gameMap);
+            }
         }
     }
 
@@ -84,31 +94,36 @@ public class Bomb extends MovableObject {
         flames.add(centerFlame);
         for (int i = -power; i <= power; ++i) {
             if (i != 0) {
-                Flame flameX = new Flame(getX() + i * TILE_WIDTH, getY(), Flame.Position.HORIZONTAL);
-                Flame flameY = new Flame(getX(), getY() + i * TILE_HEIGHT, Flame.Position.VERTICAL);
+                Flame horizontalFlame = new Flame(getX() + i * TILE_WIDTH, getY(), Flame.Position.HORIZONTAL);
+                Flame verticalFlame = new Flame(getX(), getY() + i * TILE_HEIGHT, Flame.Position.VERTICAL);
 
-                flames.add(flameX);
-                flames.add(flameY);
+                flames.add(horizontalFlame);
+                flames.add(verticalFlame);
 
                 MapObjects collisionObjects = gameMap.getTiledMap().getLayers().get(3).getObjects();
                 for(RectangleMapObject collisionObject : collisionObjects.getByType(RectangleMapObject.class)) {
-                    if (Intersector.overlaps(collisionObject.getRectangle(), flameX.getBody())) {
-                        flames.remove(flameX);
+                    if (Intersector.overlaps(collisionObject.getRectangle(), horizontalFlame.getBody())) {
+                        flames.remove(horizontalFlame);
                     }
-                    if (Intersector.overlaps(collisionObject.getRectangle(), flameY.getBody())) {
-                        flames.remove(flameY);
+                    if (Intersector.overlaps(collisionObject.getRectangle(), verticalFlame.getBody())) {
+                        flames.remove(verticalFlame);
                     }
                 }
             }
         }
     }
 
-    public void draw(SpriteBatch spriteBatch, float elapsedTime) {
+    public void draw(SpriteBatch spriteBatch) {
+        this.elapsedTime += Gdx.graphics.getDeltaTime();
+
         if (currentState == State.ACTIVATED) {
-            spriteBatch.draw(bombAnimation.getKeyFrame(elapsedTime), getX(), getY());
+            spriteBatch.draw(bombAnimation.getKeyFrame(this.elapsedTime), getX(), getY());
         } else {
             for (Flame flame : flames) {
-                flame.draw(spriteBatch, elapsedTime);
+                flame.draw(spriteBatch);
+                if (flame.isFinished()) {
+                    setCurrentState(State.EXPLODED);
+                }
             }
         }
     }
