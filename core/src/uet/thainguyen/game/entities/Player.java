@@ -5,10 +5,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 import uet.thainguyen.game.controllers.AnimationController;
 import uet.thainguyen.game.controllers.MapController;
 
@@ -21,10 +23,11 @@ public class Player extends MovableObject {
     private static final float PLAYER_RESPAWN_Y = 352;
     private static final float PLAYER_WIDTH = 32;
     private static final float PLAYER_HEIGHT = 32;
-    private static final float PLAYER_SPEED = 4;
+    private static final float PLAYER_SPEED = 2;
 
     private static final int TILE_WIDTH = 32;
     private static final int TILE_HEIGHT = 32;
+    private static final int ACCEPTED_GO_THROUGH_PIXELS = 15;
 
     public enum State {
         WALKING_UP, WALKING_DOWN, WALKING_RIGHT, WALKING_LEFT,
@@ -195,7 +198,7 @@ public class Player extends MovableObject {
             }
             if (bomb.getCurrentMode() == Bomb.BlockMode.ON
                 && Intersector.overlaps(getBody(), bomb.getBody())) {
-                returnPreviousPos();
+                returnPreviousPos(bomb.getBody());
             }
         }
     }
@@ -209,18 +212,38 @@ public class Player extends MovableObject {
     }
 
     //if the player is colliding with a static object, return him to his previous position
-    public void returnPreviousPos() {
+    public void returnPreviousPos(Rectangle objectBody) {
         switch (currentState) {
             case WALKING_UP:
+                if (Math.abs(objectBody.getX() + TILE_WIDTH - getX()) < ACCEPTED_GO_THROUGH_PIXELS) {
+                    setX(Math.abs(objectBody.getX() + TILE_WIDTH));
+                } else if (Math.abs(getX() + TILE_WIDTH - objectBody.getX()) < ACCEPTED_GO_THROUGH_PIXELS) {
+                    setX(Math.abs(objectBody.getX() - TILE_WIDTH));
+                }
                 moveDown();
                 break;
             case WALKING_DOWN:
+                if (Math.abs(objectBody.getX() + TILE_WIDTH - getX()) < ACCEPTED_GO_THROUGH_PIXELS) {
+                    setX(Math.abs(objectBody.getX() + TILE_WIDTH));
+                } else if (Math.abs(getX() + TILE_WIDTH - objectBody.getX()) < ACCEPTED_GO_THROUGH_PIXELS) {
+                    setX(Math.abs(objectBody.getX() - TILE_WIDTH));
+                }
                 moveUp();
                 break;
             case WALKING_RIGHT:
+                if (Math.abs(objectBody.getY() + TILE_HEIGHT - getY()) < ACCEPTED_GO_THROUGH_PIXELS) {
+                    setY(Math.abs(objectBody.getY() + TILE_HEIGHT));
+                } else if (Math.abs(getY() + TILE_HEIGHT - objectBody.getY()) < ACCEPTED_GO_THROUGH_PIXELS) {
+                    setY(Math.abs(objectBody.getY() - TILE_HEIGHT));
+                }
                 moveLeft();
                 break;
             case WALKING_LEFT:
+                if (Math.abs(objectBody.getY() + TILE_HEIGHT - getY()) < ACCEPTED_GO_THROUGH_PIXELS) {
+                    setY(Math.abs(objectBody.getY() + TILE_HEIGHT));
+                } else if (Math.abs(getY() + TILE_HEIGHT - objectBody.getY()) < ACCEPTED_GO_THROUGH_PIXELS) {
+                    setY(Math.abs(objectBody.getY() - TILE_HEIGHT));
+                }
                 moveRight();
                 break;
         }

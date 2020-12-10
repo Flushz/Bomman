@@ -1,6 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="17" height="13" tilewidth="32" tileheight="32" infinite="0" nextlayerid="10" nextobjectid="151">
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="17" height="13" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="300">
  <tileset firstgid="1" source="level_2.tsx"/>
+ <objectgroup id="11" name="CollisionLayer" visible="0">
+  <object id="187" name="Wall" x="32" y="0" width="480" height="32"/>
+  <object id="188" name="Wall" x="32" y="384" width="480" height="32"/>
+  <object id="189" name="Wall" x="32" y="32" width="32" height="352"/>
+  <object id="190" name="Wall" x="480" y="32" width="32" height="352"/>
+  <object id="193" name="Wall" x="96" y="64" width="32" height="32"/>
+  <object id="194" name="Wall" x="96" y="128" width="32" height="32"/>
+  <object id="195" name="Wall" x="96" y="192" width="32" height="32"/>
+  <object id="197" name="Wall" x="160" y="64" width="32" height="32"/>
+  <object id="198" name="Wall" x="224" y="64" width="32" height="32"/>
+  <object id="199" name="Wall" x="288" y="64" width="32" height="32"/>
+  <object id="200" name="Wall" x="352" y="64" width="32" height="32"/>
+  <object id="201" name="Wall" x="416" y="64" width="32" height="32"/>
+  <object id="202" name="Wall" x="160" y="128" width="32" height="32"/>
+  <object id="203" name="Wall" x="224" y="128" width="32" height="32"/>
+  <object id="204" name="Wall" x="288" y="128" width="32" height="32"/>
+  <object id="205" name="Wall" x="352" y="128" width="32" height="32"/>
+  <object id="206" name="Wall" x="416" y="128" width="32" height="32"/>
+  <object id="207" name="Wall" x="160" y="192" width="32" height="32"/>
+  <object id="208" name="Wall" x="224" y="192" width="32" height="32"/>
+  <object id="209" name="Wall" x="288" y="192" width="32" height="32"/>
+  <object id="210" name="Wall" x="352" y="192" width="32" height="32"/>
+  <object id="211" name="Wall" x="416" y="192" width="32" height="32"/>
+  <object id="212" name="Wall" x="160" y="256" width="32" height="32"/>
+  <object id="213" name="Wall" x="224" y="256" width="32" height="32"/>
+  <object id="214" name="Wall" x="288" y="256" width="32" height="32"/>
+  <object id="215" name="Wall" x="352" y="256" width="32" height="32"/>
+  <object id="216" name="Wall" x="416" y="256" width="32" height="32"/>
+  <object id="217" name="Wall" x="96" y="320" width="32" height="32"/>
+  <object id="218" name="Wall" x="160" y="320" width="32" height="32"/>
+  <object id="219" name="Wall" x="224" y="320" width="32" height="32"/>
+  <object id="220" name="Wall" x="288" y="320" width="32" height="32"/>
+  <object id="221" name="Wall" x="352" y="320" width="32" height="32"/>
+  <object id="222" name="Wall" x="416" y="320" width="32" height="32"/>
+  <object id="225" name="Wall" x="96" y="256" width="32" height="32"/>
+  <object id="228" name="Brick" x="64" y="256" width="32" height="32"/>
+  <object id="229" name="Brick" x="128" y="192" width="32" height="32"/>
+  <object id="230" name="Brick" x="96" y="224" width="32" height="32"/>
+  <object id="231" name="Brick" x="128" y="224" width="32" height="32"/>
+  <object id="232" name="Brick" x="128" y="256" width="32" height="32"/>
+  <object id="233" name="Brick" x="128" y="288" width="32" height="32"/>
+  <object id="235" name="Brick" x="160" y="224" width="32" height="32"/>
+  <object id="236" name="Brick" x="192" y="224" width="32" height="32"/>
+  <object id="237" name="Brick" x="224" y="224" width="32" height="32"/>
+  <object id="238" name="Brick" x="256" y="224" width="32" height="32"/>
+  <object id="239" name="Brick" x="288" y="224" width="32" height="32"/>
+  <object id="240" name="Brick" x="320" y="224" width="32" height="32"/>
+  <object id="241" name="Brick" x="352" y="224" width="32" height="32"/>
+  <object id="242" name="Brick" x="416" y="224" width="32" height="32"/>
+  <object id="243" name="Brick" x="320" y="256" width="32" height="32"/>
+  <object id="244" name="Brick" x="384" y="256" width="32" height="32"/>
+  <object id="245" name="Brick" x="224" y="288" width="32" height="32"/>
+  <object id="246" name="Brick" x="256" y="288" width="32" height="32"/>
+  <object id="247" name="Brick" x="288" y="288" width="32" height="32"/>
+  <object id="248" name="Brick" x="320" y="288" width="32" height="32"/>
+  <object id="249" name="Brick" x="352" y="288" width="32" height="32"/>
+  <object id="250" name="Brick" x="384" y="288" width="32" height="32"/>
+  <object id="251" name="Brick" x="416" y="288" width="32" height="32"/>
+  <object id="252" name="Brick" x="448" y="288" width="32" height="32"/>
+  <object id="253" name="Brick" x="128" y="320" width="32" height="32"/>
+  <object id="254" name="Brick" x="384" y="320" width="32" height="32"/>
+  <object id="255" name="Brick" x="224" y="352" width="32" height="32"/>
+  <object id="256" name="Brick" x="288" y="352" width="32" height="32"/>
+  <object id="257" name="Brick" x="320" y="352" width="32" height="32"/>
+  <object id="258" name="Brick" x="352" y="352" width="32" height="32"/>
+  <object id="259" name="Brick" x="384" y="352" width="32" height="32"/>
+  <object id="260" name="Brick" x="128" y="32" width="32" height="32"/>
+  <object id="261" name="Brick" x="192" y="32" width="32" height="32"/>
+  <object id="262" name="Brick" x="256" y="32" width="32" height="32"/>
+  <object id="263" name="Brick" x="288" y="32" width="32" height="32"/>
+  <object id="264" name="Brick" x="352" y="32" width="32" height="32"/>
+  <object id="265" name="Brick" x="192" y="64" width="32" height="32"/>
+  <object id="266" name="Brick" x="320" y="64" width="32" height="32"/>
+  <object id="267" name="Brick" x="96" y="96" width="32" height="32"/>
+  <object id="268" name="Brick" x="128" y="96" width="32" height="32"/>
+  <object id="269" name="Brick" x="160" y="96" width="32" height="32"/>
+  <object id="270" name="Brick" x="224" y="96" width="32" height="32"/>
+  <object id="271" name="Brick" x="256" y="96" width="32" height="32"/>
+  <object id="272" name="Brick" x="288" y="96" width="32" height="32"/>
+  <object id="273" name="Brick" x="352" y="96" width="32" height="32"/>
+  <object id="274" name="Brick" x="384" y="96" width="32" height="32"/>
+  <object id="275" name="Brick" x="416" y="96" width="32" height="32"/>
+  <object id="276" name="Brick" x="64" y="128" width="32" height="32"/>
+  <object id="277" name="Brick" x="128" y="128" width="32" height="32"/>
+  <object id="278" name="Brick" x="256" y="128" width="32" height="32"/>
+  <object id="280" name="Brick" x="320" y="128" width="32" height="32"/>
+  <object id="281" name="Brick" x="384" y="128" width="32" height="32"/>
+  <object id="282" name="Brick" x="448" y="128" width="32" height="32"/>
+  <object id="283" name="Brick" x="160" y="160" width="32" height="32"/>
+  <object id="284" name="Brick" x="192" y="160" width="32" height="32"/>
+  <object id="285" name="Brick" x="256" y="160" width="32" height="32"/>
+  <object id="286" name="Brick" x="288" y="160" width="32" height="32"/>
+  <object id="287" name="Brick" x="384" y="160" width="32" height="32"/>
+  <object id="288" name="Brick" x="416" y="160" width="32" height="32"/>
+  <object id="289" name="Brick" x="64" y="192" width="32" height="32"/>
+  <object id="290" name="Brick" x="128" y="192" width="32" height="32"/>
+  <object id="291" name="Brick" x="192" y="192" width="32" height="32"/>
+  <object id="292" name="Brick" x="384" y="192" width="32" height="32"/>
+  <object id="293" name="Brick" x="256" y="352" width="32" height="32"/>
+  <object id="294" name="Brick" x="96" y="288" width="32" height="32"/>
+  <object id="295" name="Brick" x="160" y="288" width="32" height="32"/>
+  <object id="296" x="164" y="32"/>
+  <object id="298" name="Brick" x="160" y="32" width="32" height="32"/>
+  <object id="299" name="Brick" x="224" y="32" width="32" height="32"/>
+ </objectgroup>
  <layer id="5" name="Background" width="17" height="13">
   <data encoding="csv">
 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
@@ -14,7 +119,7 @@
 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
 3,3,3,2,3,2,3,2,3,2,3,2,3,2,3,3,3,
 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
-3,3,3,2,3,2,3,3,3,3,3,3,3,2,3,3,3,
+3,3,3,2,3,2,3,2,3,2,3,2,3,2,3,3,3,
 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3
 </data>
  </layer>
@@ -52,71 +157,4 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="8" name="Layer">
-  <object id="82" name="Wall" x="32" y="0" width="32" height="416"/>
-  <object id="83" name="Wall" x="32" y="384" width="480" height="32"/>
-  <object id="84" name="Wall" x="480" y="0" width="32" height="416"/>
-  <object id="85" name="Wall" x="96" y="64" width="32" height="32"/>
-  <object id="86" name="Wall" x="96" y="128" width="32" height="32"/>
-  <object id="87" name="Wall" x="96" y="192" width="32" height="32"/>
-  <object id="88" x="96" y="256" width="32" height="32"/>
-  <object id="89" x="96" y="320" width="32" height="32"/>
-  <object id="90" x="160" y="256" width="32" height="32"/>
-  <object id="91" x="160" y="128" width="32" height="32"/>
-  <object id="92" x="160" y="192" width="32" height="32"/>
-  <object id="93" name="Wall" x="160" y="64" width="32" height="32"/>
-  <object id="94" x="160" y="320" width="32" height="32"/>
-  <object id="95" x="224" y="64" width="32" height="32"/>
-  <object id="96" x="224" y="128" width="32" height="32"/>
-  <object id="97" x="224" y="192" width="32" height="32"/>
-  <object id="98" x="224" y="256" width="32" height="32"/>
-  <object id="99" name="Wall" x="224" y="320" width="32" height="32"/>
-  <object id="100" x="288" y="64" width="32" height="32"/>
-  <object id="101" x="288" y="128" width="32" height="32"/>
-  <object id="102" x="288" y="192" width="32" height="32"/>
-  <object id="103" x="288" y="256" width="32" height="32"/>
-  <object id="104" x="288" y="320" width="32" height="32"/>
-  <object id="105" x="352" y="192" width="32" height="32"/>
-  <object id="106" x="352" y="256" width="32" height="32"/>
-  <object id="107" x="352" y="320" width="32" height="32"/>
-  <object id="108" x="352" y="128" width="32" height="32"/>
-  <object id="109" x="352" y="64" width="32" height="32"/>
-  <object id="110" x="416" y="64" width="32" height="32"/>
-  <object id="111" x="416" y="128" width="32" height="32"/>
-  <object id="112" x="416" y="192" width="32" height="32"/>
-  <object id="114" x="416" y="256" width="32" height="32"/>
-  <object id="115" name="Wall" x="416" y="320" width="32" height="32"/>
-  <object id="116" name="Brick" x="128" y="32" width="192" height="32"/>
-  <object id="117" x="352" y="32" width="32" height="32"/>
-  <object id="118" x="192" y="64" width="32" height="32"/>
-  <object id="119" x="320" y="64" width="32" height="32"/>
-  <object id="120" name="Brick" x="96" y="96" width="96" height="32"/>
-  <object id="121" x="224" y="96" width="96" height="32"/>
-  <object id="122" x="352" y="96" width="96" height="32"/>
-  <object id="123" name="Brick" x="64" y="128" width="32" height="32"/>
-  <object id="124" name="Brick" x="128" y="128" width="32" height="32"/>
-  <object id="125" x="256" y="128" width="32" height="32"/>
-  <object id="126" x="320" y="128" width="32" height="32"/>
-  <object id="127" x="384" y="128" width="32" height="32"/>
-  <object id="128" x="448" y="128" width="32" height="32"/>
-  <object id="129" x="160" y="160" width="64" height="32"/>
-  <object id="130" x="256" y="160" width="64" height="32"/>
-  <object id="131" x="384" y="160" width="64" height="32"/>
-  <object id="132" x="192" y="192" width="32" height="32"/>
-  <object id="133" name="Brick" x="128" y="192" width="32" height="32"/>
-  <object id="134" name="Brick" x="64" y="192" width="32" height="32"/>
-  <object id="135" x="384" y="192" width="32" height="32"/>
-  <object id="136" x="96" y="224" width="288" height="32"/>
-  <object id="137" x="416" y="224" width="32" height="32"/>
-  <object id="138" x="64" y="256" width="32" height="32"/>
-  <object id="139" x="128" y="256" width="32" height="32"/>
-  <object id="140" x="320" y="256" width="32" height="32"/>
-  <object id="141" x="384" y="256" width="32" height="32"/>
-  <object id="142" x="96" y="288" width="96" height="32"/>
-  <object id="143" x="224" y="288" width="256" height="32"/>
-  <object id="144" x="128" y="320" width="32" height="32"/>
-  <object id="145" x="224" y="352" width="192" height="32"/>
-  <object id="146" name="Brick" x="384" y="320" width="32" height="32"/>
-  <object id="149" name="Wall" x="65.0226" y="0" width="416" height="32"/>
- </objectgroup>
 </map>

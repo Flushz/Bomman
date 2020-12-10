@@ -24,7 +24,7 @@ public class Bomb extends MovableObject {
 
     private static final float BOMB_WIDTH = 32;
     private static final float BOMB_HEIGHT = 32;
-    private static final float BOMB_TIME_LIMIT = 2;
+    private static final float BOMB_TIME_LIMIT = 2.5f;
 
     public enum State {
         ACTIVATED,
@@ -104,7 +104,7 @@ public class Bomb extends MovableObject {
                 flames.add(horizontalFlame);
                 flames.add(verticalFlame);
 
-                MapObjects collisionObjects = gameMap.getTiledMap().getLayers().get(3).getObjects();
+                MapObjects collisionObjects = gameMap.getTiledMap().getLayers().get(0).getObjects();
                 for(RectangleMapObject collisionObject : collisionObjects.getByType(RectangleMapObject.class)) {
                     if (Intersector.overlaps(collisionObject.getRectangle(), horizontalFlame.getBody())
                             && collisionObject.getName().equals("Wall")) {

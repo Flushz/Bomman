@@ -43,7 +43,7 @@ public class PlayScreen implements Screen {
 
         camera = new OrthographicCamera();
         gameMap = new MapController(camera);
-        collisionLayer = gameMap.getTiledMap().getLayers().get(3);
+        collisionLayer = gameMap.getTiledMap().getLayers().get(0);
         hare = new Hare();
         player = new Player();
         bombs = player.getBombs();
@@ -73,7 +73,7 @@ public class PlayScreen implements Screen {
         MapObjects collisionObjects = collisionLayer.getObjects();
         for(RectangleMapObject collisionObject : collisionObjects.getByType(RectangleMapObject.class)) {
             if (Intersector.overlaps(collisionObject.getRectangle(), player.getBody())) {
-                player.returnPreviousPos();
+                player.returnPreviousPos(collisionObject.getRectangle());
             }
         }
 
