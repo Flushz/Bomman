@@ -1,4 +1,4 @@
-package uet.thainguyen.game.entities;
+package uet.thainguyen.game.entities.explosion;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;

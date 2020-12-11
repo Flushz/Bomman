@@ -52,9 +52,12 @@ public class MapController {
         return this.tiledMap;
     }
 
-    public void render() {
+    public void update() {
         camera.update();
         renderer.setView(camera);
+    }
+
+    public void render() {
         renderer.render();
     }
 }

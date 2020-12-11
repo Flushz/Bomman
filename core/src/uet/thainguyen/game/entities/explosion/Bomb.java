@@ -1,6 +1,5 @@
-package uet.thainguyen.game.entities;
+package uet.thainguyen.game.entities.explosion;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -9,6 +8,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Intersector;
 import uet.thainguyen.game.controllers.AnimationController;
 import uet.thainguyen.game.controllers.MapController;
+import uet.thainguyen.game.entities.AnimatedObject;
 
 import java.util.ArrayList;
 

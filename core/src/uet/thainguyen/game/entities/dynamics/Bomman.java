@@ -8,9 +8,8 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import uet.thainguyen.game.controllers.AnimationController;
 import uet.thainguyen.game.controllers.MapController;
-import uet.thainguyen.game.entities.Bomb;
-import uet.thainguyen.game.entities.Flame;
-import uet.thainguyen.game.entities.dynamics.DynamicObject;
+import uet.thainguyen.game.entities.explosion.Bomb;
+import uet.thainguyen.game.entities.explosion.Flame;
 
 import java.util.ArrayList;
 import java.util.Iterator;

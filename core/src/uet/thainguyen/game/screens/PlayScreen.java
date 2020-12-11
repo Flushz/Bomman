@@ -10,10 +10,14 @@ import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import uet.thainguyen.game.controllers.MapController;
-import uet.thainguyen.game.entities.Bomb;
-import uet.thainguyen.game.entities.Flame;
+import uet.thainguyen.game.entities.explosion.Bomb;
+import uet.thainguyen.game.entities.explosion.Flame;
+import uet.thainguyen.game.entities.statics.BrickLayer;
+import uet.thainguyen.game.entities.statics.GrassLayer;
+import uet.thainguyen.game.entities.statics.WallLayer;
 import uet.thainguyen.game.entities.dynamics.Hare;
 import uet.thainguyen.game.entities.dynamics.Bomman;
 import uet.thainguyen.game.entities.items.SpeedItem;
@@ -26,9 +30,15 @@ public class PlayScreen implements Screen {
     private static int TILE_HEIGHT = 32;
 
     SpriteBatch spriteBatch;
+
     OrthographicCamera camera;
+    OrthogonalTiledMapRenderer renderer;
     MapController gameMap;
     MapLayer collisionLayer;
+    GrassLayer grassLayer;
+    WallLayer wallLayer;
+    BrickLayer brickLayer;
+
     Hare hare;
     Bomman bomman;
     SpeedItem speedItem;
@@ -41,10 +51,17 @@ public class PlayScreen implements Screen {
 
         camera = new OrthographicCamera();
         gameMap = new MapController(camera);
+        renderer = new OrthogonalTiledMapRenderer(gameMap.getTiledMap());
+        renderer.setView(camera);
         collisionLayer = gameMap.getTiledMap().getLayers().get(0);
+        grassLayer = new GrassLayer(gameMap.getTiledMap());
+        wallLayer = new WallLayer(gameMap.getTiledMap());
+        brickLayer = new BrickLayer(gameMap.getTiledMap());
+
+        speedItem = new SpeedItem(0,0);
+
         hare = new Hare();
         bomman = new Bomman();
-        speedItem = new SpeedItem(0,0);
         bombs = bomman.getBombs();
     }
 
@@ -55,16 +72,22 @@ public class PlayScreen implements Screen {
 
         elapsedTime += Gdx.graphics.getDeltaTime();
 
+        gameMap.update();
         hare.update(gameMap);
         bomman.update(gameMap);
 
         detectCollisions();
 
+        renderer.getBatch().begin();
+        renderer.renderTileLayer(grassLayer.getStaticLayer());
+        renderer.renderTileLayer(wallLayer.getStaticLayer());
+        speedItem.render((SpriteBatch) renderer.getBatch());
+        renderer.renderTileLayer(brickLayer.getStaticLayer());
+        renderer.getBatch().end();
+
         spriteBatch.begin();
-        gameMap.render();
         hare.render(spriteBatch);
         bomman.render(spriteBatch);
-        speedItem.render(spriteBatch);
         spriteBatch.end();
     }
 
