@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
@@ -23,7 +24,11 @@ public class AnimationController {
     private static final String CENTER_KEY = "center";
     private static final String VERTICAL_KEY = "vertical";
     private static final String HORIZONTAL_KEY = "horizontal";
-
+    private static final String ITEM_BACKGROUND_KEY = "background";
+    private static final String ITEM_IMAGE_KEY = "image";
+    private static final String SPEED_ITEM_KEY = "speed_item";
+    private static final String SUPER_BOMB_ITEM_KEY = "super_bomb_item";
+    private static final String BOMB_SPACE_ITEM_KEY = "bomb_space_item";
 
     private static final int PLAYER_FRAME_COLS = 4;
     private static final int PLAYER_FRAME_ROWS = 6;
@@ -40,6 +45,10 @@ public class AnimationController {
     private static final int FLAME_FRAME_COLS = 4;
     private static final int FLAME_FRAME_ROWS = 8;
     private static final float FLAME_FRAME_DURATION = 0.1f;
+
+    private static final int ITEM_FRAME_COLS = 8;
+    private static final int ITEM_FRAME_ROWS = 16;
+    private static final float ITEM_FRAME_DURATION = 0.1f;
 
     public static void loadPlayerAnimation(HashMap<String, Animation<TextureRegion>> playerAnimations) {
 
@@ -180,5 +189,51 @@ public class AnimationController {
         flameAnimations.put(CENTER_KEY, centerAnimation);
         flameAnimations.put(VERTICAL_KEY, verticalAnimation);
         flameAnimations.put(HORIZONTAL_KEY, horizontalAnimation);
+    }
+
+    public static void loadItemAnimations(HashMap<String, Animation<TextureRegion>> itemAnimations, @NotNull String itemKeyName) {
+        Texture itemTexture = new Texture(Gdx.files.internal("sprites/items.png"));
+        TextureRegion[][] itemSprites = TextureRegion.split(itemTexture,
+                itemTexture.getWidth() / ITEM_FRAME_COLS,
+                itemTexture.getHeight() / ITEM_FRAME_ROWS);
+
+        TextureRegion[] itemBackgroundFrames = new TextureRegion[8];
+        TextureRegion[] itemImageFrames = new TextureRegion[1];
+
+        int itemBackgroundRow = 4;
+        int itemImageRow = 10;
+        int itemImageCol = 3;
+
+        switch (itemKeyName) {
+            case SPEED_ITEM_KEY:
+                itemBackgroundRow = 4;
+                itemImageRow = 10;
+                itemImageCol = 3;
+                break;
+            case SUPER_BOMB_ITEM_KEY:
+                itemBackgroundRow = 0;
+                itemImageRow = 11;
+                itemImageCol = 0;
+                break;
+            case BOMB_SPACE_ITEM_KEY:
+                itemBackgroundRow = 1;
+                itemImageRow = 10;
+                itemImageCol = 7;
+                break;
+        }
+
+        for (int i = 0; i < 8; i++) {
+            itemBackgroundFrames[i] = itemSprites[itemBackgroundRow][i];
+        }
+        itemImageFrames[0] = itemSprites[itemImageRow][itemImageCol];
+
+        Animation<TextureRegion> itemBackgroundAnimation = new Animation<>(ITEM_FRAME_DURATION, itemBackgroundFrames);
+        itemBackgroundAnimation.setPlayMode(PlayMode.LOOP);
+
+        Animation<TextureRegion> itemImageAnimation = new Animation<>(ITEM_FRAME_DURATION, itemImageFrames);
+        itemImageAnimation.setPlayMode(PlayMode.LOOP);
+
+        itemAnimations.put(ITEM_BACKGROUND_KEY, itemBackgroundAnimation);
+        itemAnimations.put(ITEM_IMAGE_KEY, itemImageAnimation);
     }
 }

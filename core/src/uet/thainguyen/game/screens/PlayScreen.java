@@ -6,20 +6,17 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Rectangle;
 import uet.thainguyen.game.controllers.MapController;
 import uet.thainguyen.game.entities.Bomb;
 import uet.thainguyen.game.entities.Flame;
-import uet.thainguyen.game.entities.Hare;
-import uet.thainguyen.game.entities.Player;
+import uet.thainguyen.game.entities.dynamics.Hare;
+import uet.thainguyen.game.entities.dynamics.Bomman;
+import uet.thainguyen.game.entities.items.SpeedItem;
 
 import java.util.ArrayList;
 
@@ -33,7 +30,8 @@ public class PlayScreen implements Screen {
     MapController gameMap;
     MapLayer collisionLayer;
     Hare hare;
-    Player player;
+    Bomman bomman;
+    SpeedItem speedItem;
     ArrayList<Bomb> bombs;
 
     private float elapsedTime = 0;
@@ -45,8 +43,9 @@ public class PlayScreen implements Screen {
         gameMap = new MapController(camera);
         collisionLayer = gameMap.getTiledMap().getLayers().get(0);
         hare = new Hare();
-        player = new Player();
-        bombs = player.getBombs();
+        bomman = new Bomman();
+        speedItem = new SpeedItem(0,0);
+        bombs = bomman.getBombs();
     }
 
     @Override
@@ -56,15 +55,16 @@ public class PlayScreen implements Screen {
 
         elapsedTime += Gdx.graphics.getDeltaTime();
 
-        hare.update();
-        player.update(gameMap);
+        hare.update(gameMap);
+        bomman.update(gameMap);
 
         detectCollisions();
 
         spriteBatch.begin();
         gameMap.render();
-        hare.render(spriteBatch, elapsedTime);
-        player.render(spriteBatch, elapsedTime);
+        hare.render(spriteBatch);
+        bomman.render(spriteBatch);
+        speedItem.render(spriteBatch);
         spriteBatch.end();
     }
 
@@ -72,8 +72,8 @@ public class PlayScreen implements Screen {
 
         MapObjects collisionObjects = collisionLayer.getObjects();
         for(RectangleMapObject collisionObject : collisionObjects.getByType(RectangleMapObject.class)) {
-            if (Intersector.overlaps(collisionObject.getRectangle(), player.getBody())) {
-                player.returnPreviousPos(collisionObject.getRectangle());
+            if (Intersector.overlaps(collisionObject.getRectangle(), bomman.getBody())) {
+                bomman.returnPreviousPos(collisionObject.getRectangle());
             }
         }
 
@@ -83,8 +83,8 @@ public class PlayScreen implements Screen {
                 if (bomb.getCurrentState() == Bomb.State.EXPLODING) {
                     ArrayList<Flame> flames = bomb.getFlames();
                     for (Flame flame : flames) {
-                        if (Intersector.overlaps(player.getBody(), flame.getBody())) {
-                            player.setCurrentState(Player.State.DYING);
+                        if (Intersector.overlaps(bomman.getBody(), flame.getBody())) {
+                            bomman.setCurrentState(Bomman.State.DYING);
                         }
 
                         for(RectangleMapObject collisionObject : collisionObjects.getByType(RectangleMapObject.class)) {

@@ -1,29 +1,27 @@
-package uet.thainguyen.game.entities;
+package uet.thainguyen.game.entities.dynamics;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import uet.thainguyen.game.controllers.AnimationController;
 import uet.thainguyen.game.controllers.MapController;
+import uet.thainguyen.game.entities.Bomb;
+import uet.thainguyen.game.entities.Flame;
+import uet.thainguyen.game.entities.dynamics.DynamicObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Player extends MovableObject {
+public class Bomman extends DynamicObject {
 
     private static final float PLAYER_RESPAWN_X = 64;
     private static final float PLAYER_RESPAWN_Y = 352;
     private static final float PLAYER_WIDTH = 32;
     private static final float PLAYER_HEIGHT = 32;
-    private static final float PLAYER_SPEED = 2;
+    private static final int PLAYER_SPEED = 2;
 
     private static final int TILE_WIDTH = 32;
     private static final int TILE_HEIGHT = 32;
@@ -42,7 +40,7 @@ public class Player extends MovableObject {
     private ArrayList<Bomb> bombs;
     private ArrayList<Flame> flames;
 
-    public Player() {
+    public Bomman() {
         super(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y, PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_SPEED);
         AnimationController.loadPlayerAnimation(getAnimationSet());
         currentState = State.IDLING_DOWN;
@@ -108,11 +106,13 @@ public class Player extends MovableObject {
         setX(getX() - getSpeed());
     }
 
+    @Override
     public void update(MapController gameMap) {
         handleInput();
         checkState();
         checkBombState(gameMap);
         checkBombBlockMode();
+        updateElapsedTime();
     }
 
     private void handleInput() {
@@ -249,44 +249,45 @@ public class Player extends MovableObject {
         }
     }
 
-    public void render(SpriteBatch spriteBatch, float elapsedTime) {
+    @Override
+    public void render(SpriteBatch spriteBatch) {
         Iterator<Bomb> bombIterator = bombs.iterator();
         while (bombIterator.hasNext()) {
             Bomb bomb = bombIterator.next();
-            bomb.draw(spriteBatch);
+            bomb.render(spriteBatch);
             if (bomb.getCurrentState() == Bomb.State.EXPLODED) {
                 bombIterator.remove();
             }
         }
 
-        TextureRegion frame = getAnimationSet().get("idling_down").getKeyFrame(elapsedTime);
+        TextureRegion frame = getAnimationSet().get("idling_down").getKeyFrame(getElapsedTime());
         switch (currentState) {
             case WALKING_UP:
-                frame = getAnimationSet().get("walking_up").getKeyFrame(elapsedTime);
+                frame = getAnimationSet().get("walking_up").getKeyFrame(getElapsedTime());
                 break;
             case WALKING_DOWN:
-                frame = getAnimationSet().get("walking_down").getKeyFrame(elapsedTime);
+                frame = getAnimationSet().get("walking_down").getKeyFrame(getElapsedTime());
                 break;
             case WALKING_RIGHT:
-                frame = getAnimationSet().get("walking_right").getKeyFrame(elapsedTime);
+                frame = getAnimationSet().get("walking_right").getKeyFrame(getElapsedTime());
                 break;
             case WALKING_LEFT:
-                frame = getAnimationSet().get("walking_left").getKeyFrame(elapsedTime);
+                frame = getAnimationSet().get("walking_left").getKeyFrame(getElapsedTime());
                 break;
             case IDLING_UP:
-                frame = getAnimationSet().get("idling_up").getKeyFrame(elapsedTime);
+                frame = getAnimationSet().get("idling_up").getKeyFrame(getElapsedTime());
                 break;
             case IDLING_DOWN:
-                frame = getAnimationSet().get("idling_down").getKeyFrame(elapsedTime);
+                frame = getAnimationSet().get("idling_down").getKeyFrame(getElapsedTime());
                 break;
             case IDLING_RIGHT:
-                frame = getAnimationSet().get("idling_right").getKeyFrame(elapsedTime);
+                frame = getAnimationSet().get("idling_right").getKeyFrame(getElapsedTime());
                 break;
             case IDLING_LEFT:
-                frame = getAnimationSet().get("idling_left").getKeyFrame(elapsedTime);
+                frame = getAnimationSet().get("idling_left").getKeyFrame(getElapsedTime());
                 break;
             case DYING:
-                frame = getAnimationSet().get("dying").getKeyFrame(elapsedTime);
+                frame = getAnimationSet().get("dying").getKeyFrame(getElapsedTime());
         }
         spriteBatch.draw(frame, getX(), getY());
     }

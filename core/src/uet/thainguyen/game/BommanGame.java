@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import uet.thainguyen.game.screens.PlayScreen;
 
-public class Bomman extends Game {
+public class BommanGame extends Game {
 	SpriteBatch spriteBatch;
 	
 	@Override

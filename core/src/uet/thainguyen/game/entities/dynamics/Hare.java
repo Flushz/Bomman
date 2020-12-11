@@ -1,19 +1,20 @@
-package uet.thainguyen.game.entities;
+package uet.thainguyen.game.entities.dynamics;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import uet.thainguyen.game.controllers.AnimationController;
+import uet.thainguyen.game.controllers.MapController;
 
-public class Hare extends MovableObject{
+public class Hare extends DynamicObject {
 
     private static final float HARE_RESPAWN_X = 96;
     private static final float HARE_RESPAWN_Y = 32;
     private static final float HARE_WIDTH = 32;
     private static final float HARE_HEIGHT = 32;
-    private static final float HARE_SPEED = 1;
+    private static final int HARE_SPEED = 1;
 
-    private enum State {
+    public enum State {
         WALKING_UP, WALKING_DOWN, WALKING_RIGHT, WALKING_LEFT,
         DYING
     }
@@ -32,23 +33,29 @@ public class Hare extends MovableObject{
         this.currentState = state;
     }
 
+    @Override
     public void moveUp() {
         setY(getY() + getSpeed());
     }
 
+    @Override
     public void moveDown() {
         setY(getY() - getSpeed());
     }
 
+    @Override
     public void moveRight() {
         setX(getX() + getSpeed());
     }
 
+    @Override
     public void moveLeft() {
         setX(getX() - getSpeed());
     }
 
-    public void update() {
+    @Override
+    public void update(MapController gameMap) {
+        updateElapsedTime();
         if (getX() == boundingBox.getX()) {
             setCurrentState(State.WALKING_RIGHT);
         } else if (getX() + getWidth() == boundingBox.getX() + boundingBox.getWidth()) {
@@ -62,20 +69,21 @@ public class Hare extends MovableObject{
         }
     }
 
-    public void render(SpriteBatch spriteBatch, float elapsedTime) {
-        TextureRegion frame = getAnimationSet().get("walking_down").getKeyFrame(elapsedTime);
+    @Override
+    public void render(SpriteBatch spriteBatch) {
+        TextureRegion frame = getAnimationSet().get("walking_down").getKeyFrame(getElapsedTime());
         switch (currentState) {
             case WALKING_UP:
-                frame = getAnimationSet().get("walking_up").getKeyFrame(elapsedTime);
+                frame = getAnimationSet().get("walking_up").getKeyFrame(getElapsedTime());
                 break;
             case WALKING_DOWN:
-                frame = getAnimationSet().get("walking_down").getKeyFrame(elapsedTime);
+                frame = getAnimationSet().get("walking_down").getKeyFrame(getElapsedTime());
                 break;
             case WALKING_RIGHT:
-                frame = getAnimationSet().get("walking_right").getKeyFrame(elapsedTime);
+                frame = getAnimationSet().get("walking_right").getKeyFrame(getElapsedTime());
                 break;
             case WALKING_LEFT:
-                frame = getAnimationSet().get("walking_left").getKeyFrame(elapsedTime);
+                frame = getAnimationSet().get("walking_left").getKeyFrame(getElapsedTime());
                 break;
         }
         spriteBatch.draw(frame,getX(), getY());

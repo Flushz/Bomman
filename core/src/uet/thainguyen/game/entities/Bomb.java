@@ -4,20 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Rectangle;
 import uet.thainguyen.game.controllers.AnimationController;
 import uet.thainguyen.game.controllers.MapController;
 
 import java.util.ArrayList;
 
-public class Bomb extends MovableObject {
+public class Bomb extends AnimatedObject {
 
     private static final int TILE_WIDTH = 32;
     private static final int TILE_HEIGHT = 32;
@@ -38,15 +33,13 @@ public class Bomb extends MovableObject {
 
     private State currentState;
     private BlockMode currentMode;
-    private float elapsedTime;
     private int power;
 
     private final Animation<TextureRegion> bombAnimation;
     private final ArrayList<Flame> flames;
 
     public Bomb(int posX, int posY) {
-        super(posX, posY, BOMB_WIDTH, BOMB_HEIGHT, 0);
-        this.elapsedTime = 0;
+        super(posX, posY, BOMB_WIDTH, BOMB_HEIGHT);
         this.power = 1;
         this.bombAnimation = AnimationController.loadBombAnimation();
         this.flames = new ArrayList<>();
@@ -83,9 +76,9 @@ public class Bomb extends MovableObject {
     }
 
     public void checkState(MapController gameMap) {
-        this.elapsedTime += Gdx.graphics.getDeltaTime();
+        updateElapsedTime();
 
-        if (this.elapsedTime > BOMB_TIME_LIMIT) {
+        if (getElapsedTime() > BOMB_TIME_LIMIT) {
             setCurrentState(State.EXPLODING);
             if (flames.isEmpty()) {
                 generateFlame(gameMap);
@@ -119,11 +112,11 @@ public class Bomb extends MovableObject {
         }
     }
 
-    public void draw(SpriteBatch spriteBatch) {
-        this.elapsedTime += Gdx.graphics.getDeltaTime();
-
+    @Override
+    public void render(SpriteBatch spriteBatch) {
+        updateElapsedTime();
         if (currentState == State.ACTIVATED) {
-            spriteBatch.draw(bombAnimation.getKeyFrame(this.elapsedTime), getX(), getY());
+            spriteBatch.draw(bombAnimation.getKeyFrame(getElapsedTime()), getX(), getY());
         } else {
             for (Flame flame : flames) {
                 flame.draw(spriteBatch);
