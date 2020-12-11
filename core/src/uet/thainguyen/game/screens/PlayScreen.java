@@ -45,8 +45,10 @@ public class PlayScreen implements Screen {
 
     Hare hare;
     Bomman bomman;
+
     ArrayList<Bomb> bombs;
     ArrayList<Item> items;
+    ArrayList<Float> itemDuration;
 
     private float elapsedTime = 0;
 
@@ -144,10 +146,13 @@ public class PlayScreen implements Screen {
         for (Item item : items) {
             if (Intersector.overlaps(item.getBody(), bomman.getBody())) {
                 item.activate(bomman);
+                bomman.setItemDuration(Bomman.DEFAULT_PLAYER_ITEM_DURATION);
+                bomman.powerUp();
                 usedItems.add(item);
             }
         }
         items.removeAll(usedItems);
+        usedItems.clear();
     }
 
     @Override

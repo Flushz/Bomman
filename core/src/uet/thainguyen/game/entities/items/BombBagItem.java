@@ -15,8 +15,8 @@ public class BombBagItem extends Item {
 
     @Override
     public void activate(Bomman bomman) {
-        if (bomman.getBombLeft() < BOMB_BAG_LIMIT) {
-            bomman.increaseBombLeft(1);
+        if (bomman.getBombLimit() < BOMB_BAG_LIMIT) {
+            bomman.increaseBombLimit(1);
         }
     }
 }

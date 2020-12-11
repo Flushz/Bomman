@@ -20,7 +20,11 @@ public class Bomman extends DynamicObject {
     private static final float PLAYER_RESPAWN_Y = 352;
     private static final float PLAYER_WIDTH = 32;
     private static final float PLAYER_HEIGHT = 32;
-    private static final int PLAYER_SPEED = 2;
+
+    public static final int DEFAULT_PLAYER_SPEED = 2;
+    public static final int DEFAULT_PLAYER_BOMB_LIMIT = 1;
+    public static final int DEFAULT_PLAYER_ITEM_DURATION = 10;
+    public static final int ITEM_INEFFECTIVE_TIME = 0;
 
     private static final int TILE_WIDTH = 32;
     private static final int TILE_HEIGHT = 32;
@@ -33,32 +37,66 @@ public class Bomman extends DynamicObject {
     }
 
     private State currentState;
-    private int bombLeft;
+    private int bombLimit;
+    private float itemDuration;
     private boolean isMoving;
+    private boolean isPoweredUp;
 
     private ArrayList<Bomb> bombs;
     private ArrayList<Flame> flames;
 
     public Bomman() {
-        super(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y, PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_SPEED);
+        super(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y, PLAYER_WIDTH, PLAYER_HEIGHT, DEFAULT_PLAYER_SPEED);
         AnimationController.loadPlayerAnimation(getAnimationSet());
-        currentState = State.IDLING_DOWN;
-        isMoving = false;
-        bombLeft = 1;
-        bombs = new ArrayList<>();
-        flames = new ArrayList<>();
+        this.currentState = State.IDLING_DOWN;
+        this.isMoving = false;
+        this.isPoweredUp = false;
+        this.bombLimit = DEFAULT_PLAYER_BOMB_LIMIT;
+        this.itemDuration = DEFAULT_PLAYER_ITEM_DURATION;
+        this.bombs = new ArrayList<>();
+        this.flames = new ArrayList<>();
+    }
+
+    public void resetProperties() {
+        setSpeed(DEFAULT_PLAYER_SPEED);
+        setBombLimit(DEFAULT_PLAYER_BOMB_LIMIT);
+        setItemDuration(DEFAULT_PLAYER_ITEM_DURATION);
+    }
+
+    public boolean isPoweredUp() {
+        return this.isPoweredUp;
+    }
+
+    public void powerUp() {
+        this.isPoweredUp = true;
+    }
+
+    public void powerDown() {
+        this.isPoweredUp = false;
+    }
+
+    public float getItemDuration() {
+        return this.itemDuration;
+    }
+
+    public void setItemDuration(float itemDuration) {
+        this.itemDuration = itemDuration;
     }
 
     public State getCurrentState() {
         return currentState;
     }
 
-    public int getBombLeft() {
-        return bombLeft;
+    public int getBombLimit() {
+        return this.bombLimit;
     }
 
-    public void increaseBombLeft(int bombLeft) {
-        this.bombLeft += bombLeft;
+    public void setBombLimit(int bombLimit) {
+        this.bombLimit = bombLimit;
+    }
+
+    public void increaseBombLimit(int bombLimit) {
+        this.bombLimit += bombLimit;
     }
 
     public boolean isMoving() {
@@ -107,11 +145,22 @@ public class Bomman extends DynamicObject {
 
     @Override
     public void update(MapController gameMap) {
+        if (isPoweredUp()) {
+            updateItemDuration();
+        }
         handleInput();
         checkState();
         checkBombState(gameMap);
         checkBombBlockMode();
         updateElapsedTime();
+    }
+
+    public void updateItemDuration() {
+        itemDuration -= Gdx.graphics.getDeltaTime();
+        if (itemDuration <= ITEM_INEFFECTIVE_TIME) {
+            powerDown();
+            resetProperties();
+        }
     }
 
     private void handleInput() {
@@ -131,7 +180,7 @@ public class Bomman extends DynamicObject {
                 setCurrentState(State.WALKING_LEFT);
                 moveLeft();
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-                if (bombs.size() < bombLeft) {
+                if (bombs.size() < bombLimit) {
                     int bombRespawnX = getBombRespawnX();
                     int bombRespawnY = getBombRespawnY();
                     bombs.add(new Bomb(bombRespawnX, bombRespawnY));

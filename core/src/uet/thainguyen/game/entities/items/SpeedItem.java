@@ -14,6 +14,6 @@ public class SpeedItem extends Item{
 
     @Override
     public void activate(Bomman bomman) {
-        bomman.setSpeed(2);
+        bomman.increaseSpeed(2);
     }
 }

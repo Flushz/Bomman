@@ -17,6 +17,10 @@ public abstract class DynamicObject extends AnimatedObject {
     }
 
     public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    public void increaseSpeed(int speed) {
         this.speed += speed;
     }
 

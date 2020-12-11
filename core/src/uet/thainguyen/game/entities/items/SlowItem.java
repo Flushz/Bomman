@@ -12,6 +12,6 @@ public class SlowItem extends Item {
 
     @Override
     public void activate(Bomman bomman) {
-        bomman.setSpeed(-1);
+        bomman.increaseSpeed(-1);
     }
 }
