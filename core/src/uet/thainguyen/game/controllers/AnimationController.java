@@ -212,7 +212,7 @@ public class AnimationController {
                 itemImageCol = 3;
                 break;
             case SUPER_BOMB_ITEM_KEY:
-                itemBackgroundRow = 0;
+                itemBackgroundRow = 4;
                 itemImageRow = 11;
                 itemImageCol = 0;
                 break;

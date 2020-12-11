@@ -1,17 +1,17 @@
-- Item duration
-- Powerful bomb item
-- Can not place bomb in a same tile
-- Bomb chain explosion
-- Player and enemies collision
-- Enemies and bomb collision
-- Enemy kinds:
-	+ Move in a bounding box
-	+ Auto chasing
-	+ Powerful (increase speed, auto chasing)
-	+ Boss (have health)
-- Game menu screen
-- Game over screen
-- Game stages
-- Sound and music
-- Funtional buttons
-- Multiple player mode
+[DONE]	- Item duration
+	- Powerful bomb item
+	- Can not place bomb in a same tile
+	- Bomb chain explosion
+	- Player and enemies collision
+	- Enemies and bomb collision
+	- Enemy kinds:
+		+ Move in a bounding box
+		+ Auto chasing
+		+ Powerful (increase speed, auto chasing)
+		+ Boss (have health)
+	- Game menu screen
+	- Game over screen
+	- Game stages
+	- Sound and music
+	- Funtional buttons
+	- Multiple player mode

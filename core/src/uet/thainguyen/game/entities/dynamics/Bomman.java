@@ -23,6 +23,7 @@ public class Bomman extends DynamicObject {
 
     public static final int DEFAULT_PLAYER_SPEED = 2;
     public static final int DEFAULT_PLAYER_BOMB_LIMIT = 1;
+    public static final int DEFAULT_PLAYER_BOMB_POWER = 1;
     public static final int DEFAULT_PLAYER_ITEM_DURATION = 10;
     public static final int ITEM_INEFFECTIVE_TIME = 0;
 
@@ -38,6 +39,7 @@ public class Bomman extends DynamicObject {
 
     private State currentState;
     private int bombLimit;
+    private int bombPower;
     private float itemDuration;
     private boolean isMoving;
     private boolean isPoweredUp;
@@ -52,6 +54,7 @@ public class Bomman extends DynamicObject {
         this.isMoving = false;
         this.isPoweredUp = false;
         this.bombLimit = DEFAULT_PLAYER_BOMB_LIMIT;
+        this.bombPower = DEFAULT_PLAYER_BOMB_POWER;
         this.itemDuration = DEFAULT_PLAYER_ITEM_DURATION;
         this.bombs = new ArrayList<>();
         this.flames = new ArrayList<>();
@@ -61,6 +64,7 @@ public class Bomman extends DynamicObject {
         setSpeed(DEFAULT_PLAYER_SPEED);
         setBombLimit(DEFAULT_PLAYER_BOMB_LIMIT);
         setItemDuration(DEFAULT_PLAYER_ITEM_DURATION);
+        setBombPower(DEFAULT_PLAYER_BOMB_POWER);
     }
 
     public boolean isPoweredUp() {
@@ -95,8 +99,12 @@ public class Bomman extends DynamicObject {
         this.bombLimit = bombLimit;
     }
 
-    public void increaseBombLimit(int bombLimit) {
-        this.bombLimit += bombLimit;
+    public int getBombPower() {
+        return bombPower;
+    }
+
+    public void setBombPower(int bombPower) {
+        this.bombPower = bombPower;
     }
 
     public boolean isMoving() {
@@ -127,18 +135,30 @@ public class Bomman extends DynamicObject {
         this.currentState = state;
     }
 
+    public void increaseBombLimit(int bombLimit) {
+        this.bombLimit += bombLimit;
+    }
+
+    public void increaseBombPower(int bombPower) {
+        this.bombPower += bombPower;
+    }
+
+    @Override
     public void moveUp() {
         setY(getY() + getSpeed());
     }
 
+    @Override
     public void moveDown() {
         setY(getY() - getSpeed());
     }
 
+    @Override
     public void moveRight() {
         setX(getX() + getSpeed());
     }
 
+    @Override
     public void moveLeft() {
         setX(getX() - getSpeed());
     }
@@ -183,7 +203,7 @@ public class Bomman extends DynamicObject {
                 if (bombs.size() < bombLimit) {
                     int bombRespawnX = getBombRespawnX();
                     int bombRespawnY = getBombRespawnY();
-                    bombs.add(new Bomb(bombRespawnX, bombRespawnY));
+                    bombs.add(new Bomb(bombRespawnX, bombRespawnY, bombPower));
                 }
             }
         } else {

@@ -15,15 +15,12 @@ import com.badlogic.gdx.math.Intersector;
 import uet.thainguyen.game.controllers.MapController;
 import uet.thainguyen.game.entities.explosion.Bomb;
 import uet.thainguyen.game.entities.explosion.Flame;
-import uet.thainguyen.game.entities.items.BombBagItem;
-import uet.thainguyen.game.entities.items.Item;
-import uet.thainguyen.game.entities.items.SlowItem;
+import uet.thainguyen.game.entities.items.*;
 import uet.thainguyen.game.entities.statics.BrickLayer;
 import uet.thainguyen.game.entities.statics.GrassLayer;
 import uet.thainguyen.game.entities.statics.WallLayer;
 import uet.thainguyen.game.entities.dynamics.Hare;
 import uet.thainguyen.game.entities.dynamics.Bomman;
-import uet.thainguyen.game.entities.items.SpeedItem;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -69,6 +66,7 @@ public class PlayScreen implements Screen {
         items.add(new SpeedItem(64, 64));
         items.add(new SpeedItem(64, 32));
         items.add(new BombBagItem(64, 160));
+        items.add(new SuperBombItem(96, 160));
 
         hare = new Hare();
         bomman = new Bomman();

@@ -38,13 +38,13 @@ public class Bomb extends AnimatedObject {
     private final Animation<TextureRegion> bombAnimation;
     private final ArrayList<Flame> flames;
 
-    public Bomb(int posX, int posY) {
+    public Bomb(int posX, int posY, int power) {
         super(posX, posY, BOMB_WIDTH, BOMB_HEIGHT);
-        this.power = 1;
+        this.power = power;
         this.bombAnimation = AnimationController.loadBombAnimation();
+        this.currentState = State.ACTIVATED;
+        this.currentMode = BlockMode.OFF;
         this.flames = new ArrayList<>();
-        setCurrentState(State.ACTIVATED);
-        setCurrentMode(BlockMode.OFF);
     }
 
     public State getCurrentState() {
@@ -75,9 +75,12 @@ public class Bomb extends AnimatedObject {
         return flames;
     }
 
+    public void increasePower(int power) {
+        this.power += power;
+    }
+
     public void checkState(MapController gameMap) {
         updateElapsedTime();
-
         if (getElapsedTime() > BOMB_TIME_LIMIT) {
             setCurrentState(State.EXPLODING);
             if (flames.isEmpty()) {
@@ -87,27 +90,108 @@ public class Bomb extends AnimatedObject {
     }
 
     private void generateFlame(MapController gameMap) {
+        MapObjects collisionObjects = gameMap.getTiledMap().getLayers().get(0).getObjects();
+
         Flame centerFlame = new Flame(getX(), getY(), Flame.Position.CENTER);
         flames.add(centerFlame);
-        for (int i = -power; i <= power; ++i) {
-            if (i != 0) {
-                Flame horizontalFlame = new Flame(getX() + i * TILE_WIDTH, getY(), Flame.Position.HORIZONTAL);
-                Flame verticalFlame = new Flame(getX(), getY() + i * TILE_HEIGHT, Flame.Position.VERTICAL);
 
-                flames.add(horizontalFlame);
-                flames.add(verticalFlame);
+        //generate left flames
+        for (int i = -1; i >= -power; --i) {
+            Flame horizontalFlame = new Flame(getX() + i * TILE_WIDTH, getY(), Flame.Position.HORIZONTAL);
 
-                MapObjects collisionObjects = gameMap.getTiledMap().getLayers().get(0).getObjects();
-                for(RectangleMapObject collisionObject : collisionObjects.getByType(RectangleMapObject.class)) {
-                    if (Intersector.overlaps(collisionObject.getRectangle(), horizontalFlame.getBody())
-                            && collisionObject.getName().equals("Wall")) {
-                        flames.remove(horizontalFlame);
-                    }
-                    if (Intersector.overlaps(collisionObject.getRectangle(), verticalFlame.getBody())
-                            && collisionObject.getName().equals("Wall")) {
-                        flames.remove(verticalFlame);
-                    }
+            boolean isBlocked = false;
+            for(RectangleMapObject collisionObject : collisionObjects.getByType(RectangleMapObject.class)) {
+                if (Intersector.overlaps(collisionObject.getRectangle(), horizontalFlame.getBody())
+                        && collisionObject.getName().equals("Wall")) {
+                    isBlocked = true;
+                    break;
+                } else if (Intersector.overlaps(collisionObject.getRectangle(), horizontalFlame.getBody())
+                        && collisionObject.getName().equals("Brick")) {
+                    isBlocked = true;
+                    flames.add(horizontalFlame);
+                    break;
                 }
+            }
+
+            if (isBlocked) {
+                break;
+            } else {
+                flames.add(horizontalFlame);
+            }
+        }
+
+        //generate right flames
+        for (int i = 1; i <= power; ++i) {
+            Flame horizontalFlame = new Flame(getX() + i * TILE_WIDTH, getY(), Flame.Position.HORIZONTAL);
+
+            boolean isBlocked = false;
+            for(RectangleMapObject collisionObject : collisionObjects.getByType(RectangleMapObject.class)) {
+                if (Intersector.overlaps(collisionObject.getRectangle(), horizontalFlame.getBody())
+                        && collisionObject.getName().equals("Wall")) {
+                    isBlocked = true;
+                    break;
+                } else if (Intersector.overlaps(collisionObject.getRectangle(), horizontalFlame.getBody())
+                        && collisionObject.getName().equals("Brick")) {
+                    isBlocked = true;
+                    flames.add(horizontalFlame);
+                    break;
+                }
+            }
+
+            if (isBlocked) {
+                break;
+            } else {
+                flames.add(horizontalFlame);
+            }
+        }
+
+        //generate up flames
+        for (int i = 1; i <= power; ++i) {
+            Flame verticalFlame = new Flame(getX(), getY() + i * TILE_HEIGHT, Flame.Position.VERTICAL);
+
+            boolean isBlocked = false;
+            for(RectangleMapObject collisionObject : collisionObjects.getByType(RectangleMapObject.class)) {
+                if (Intersector.overlaps(collisionObject.getRectangle(), verticalFlame.getBody())
+                        && collisionObject.getName().equals("Wall")) {
+                    isBlocked = true;
+                    break;
+                } else if (Intersector.overlaps(collisionObject.getRectangle(), verticalFlame.getBody())
+                        && collisionObject.getName().equals("Brick")) {
+                    isBlocked = true;
+                    flames.add(verticalFlame);
+                    break;
+                }
+            }
+
+            if (isBlocked) {
+                break;
+            } else {
+                flames.add(verticalFlame);
+            }
+        }
+
+        //generate down flames
+        for (int i = -1; i >= -power; --i) {
+            Flame verticalFlame = new Flame(getX(), getY() + i * TILE_HEIGHT, Flame.Position.VERTICAL);
+
+            boolean isBlocked = false;
+            for(RectangleMapObject collisionObject : collisionObjects.getByType(RectangleMapObject.class)) {
+                if (Intersector.overlaps(collisionObject.getRectangle(), verticalFlame.getBody())
+                        && collisionObject.getName().equals("Wall")) {
+                    isBlocked = true;
+                    break;
+                } else if (Intersector.overlaps(collisionObject.getRectangle(), verticalFlame.getBody())
+                        && collisionObject.getName().equals("Brick")) {
+                    isBlocked = true;
+                    flames.add(verticalFlame);
+                    break;
+                }
+            }
+
+            if (isBlocked) {
+                break;
+            } else {
+                flames.add(verticalFlame);
             }
         }
     }
