@@ -15,6 +15,9 @@ import com.badlogic.gdx.math.Intersector;
 import uet.thainguyen.game.controllers.MapController;
 import uet.thainguyen.game.entities.explosion.Bomb;
 import uet.thainguyen.game.entities.explosion.Flame;
+import uet.thainguyen.game.entities.items.BombBagItem;
+import uet.thainguyen.game.entities.items.Item;
+import uet.thainguyen.game.entities.items.SlowItem;
 import uet.thainguyen.game.entities.statics.BrickLayer;
 import uet.thainguyen.game.entities.statics.GrassLayer;
 import uet.thainguyen.game.entities.statics.WallLayer;
@@ -23,6 +26,7 @@ import uet.thainguyen.game.entities.dynamics.Bomman;
 import uet.thainguyen.game.entities.items.SpeedItem;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class PlayScreen implements Screen {
 
@@ -41,8 +45,8 @@ public class PlayScreen implements Screen {
 
     Hare hare;
     Bomman bomman;
-    SpeedItem speedItem;
     ArrayList<Bomb> bombs;
+    ArrayList<Item> items;
 
     private float elapsedTime = 0;
 
@@ -58,7 +62,11 @@ public class PlayScreen implements Screen {
         wallLayer = new WallLayer(gameMap.getTiledMap());
         brickLayer = new BrickLayer(gameMap.getTiledMap());
 
-        speedItem = new SpeedItem(0,0);
+        items = new ArrayList<>();
+        items.add(new SlowItem(64, 128));
+        items.add(new SpeedItem(64, 64));
+        items.add(new SpeedItem(64, 32));
+        items.add(new BombBagItem(64, 160));
 
         hare = new Hare();
         bomman = new Bomman();
@@ -81,7 +89,9 @@ public class PlayScreen implements Screen {
         renderer.getBatch().begin();
         renderer.renderTileLayer(grassLayer.getStaticLayer());
         renderer.renderTileLayer(wallLayer.getStaticLayer());
-        speedItem.render((SpriteBatch) renderer.getBatch());
+        for (Item item : items) {
+            item.render((SpriteBatch) renderer.getBatch());
+        }
         renderer.renderTileLayer(brickLayer.getStaticLayer());
         renderer.getBatch().end();
 
@@ -94,13 +104,15 @@ public class PlayScreen implements Screen {
     public void detectCollisions() {
 
         MapObjects collisionObjects = collisionLayer.getObjects();
+
+        //detect collision between bomman and map objects
         for(RectangleMapObject collisionObject : collisionObjects.getByType(RectangleMapObject.class)) {
             if (Intersector.overlaps(collisionObject.getRectangle(), bomman.getBody())) {
                 bomman.returnPreviousPos(collisionObject.getRectangle());
             }
         }
 
-        //Detect collision between flames and player
+        //detect collision between bomman and flames
         if (!bombs.isEmpty()) {
             for (Bomb bomb : bombs) {
                 if (bomb.getCurrentState() == Bomb.State.EXPLODING) {
@@ -126,6 +138,16 @@ public class PlayScreen implements Screen {
                 }
             }
         }
+
+        //detect collision between bomman and items
+        ArrayList<Item> usedItems = new ArrayList<>();
+        for (Item item : items) {
+            if (Intersector.overlaps(item.getBody(), bomman.getBody())) {
+                item.activate(bomman);
+                usedItems.add(item);
+            }
+        }
+        items.removeAll(usedItems);
     }
 
     @Override

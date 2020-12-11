@@ -57,8 +57,8 @@ public class Bomman extends DynamicObject {
         return bombLeft;
     }
 
-    public void setBombLeft(int bombLeft) {
-        this.bombLeft = bombLeft;
+    public void increaseBombLeft(int bombLeft) {
+        this.bombLeft += bombLeft;
     }
 
     public boolean isMoving() {
