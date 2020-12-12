@@ -19,7 +19,7 @@ public class Bomb extends AnimatedObject {
 
     private static final float BOMB_WIDTH = 32;
     private static final float BOMB_HEIGHT = 32;
-    private static final float BOMB_TIME_LIMIT = 2.5f;
+    public static final float BOMB_TIME_LIMIT = 2.5f;
 
     public enum State {
         ACTIVATED,

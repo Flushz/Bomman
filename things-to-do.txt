@@ -1,9 +1,9 @@
 [DONE]	- Item duration
-	- Powerful bomb item
+[DONE]	- Powerful bomb item
 	- Can not place bomb in a same tile
-	- Bomb chain explosion
-	- Player and enemies collision
-	- Enemies and bomb collision
+[DONE]	- Bomb chain explosion
+[DONE]	- Player and enemies collision
+[DONE]	- Enemies and bomb collision
 	- Enemy kinds:
 		+ Move in a bounding box
 		+ Auto chasing
@@ -15,3 +15,7 @@
 	- Sound and music
 	- Funtional buttons
 	- Multiple player mode
+	- BOT and items random generating
+	- High score
+	- Skin shop
+	- Timer

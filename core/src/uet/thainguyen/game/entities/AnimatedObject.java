@@ -27,6 +27,10 @@ public abstract class AnimatedObject extends GameObject{
         return this.elapsedTime;
     }
 
+    public void setElapsedTime(float elapsedTime) {
+        this.elapsedTime = elapsedTime;
+    }
+
     public void updateElapsedTime() {
         this.elapsedTime += Gdx.graphics.getDeltaTime();
     }

@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Rectangle;
 import uet.thainguyen.game.controllers.AnimationController;
 import uet.thainguyen.game.controllers.MapController;
 
-public class Hare extends DynamicObject {
+public class Hare extends Enemy {
 
     private static final float HARE_RESPAWN_X = 96;
     private static final float HARE_RESPAWN_Y = 32;
@@ -14,23 +14,14 @@ public class Hare extends DynamicObject {
     private static final float HARE_HEIGHT = 32;
     private static final int HARE_SPEED = 1;
 
-    public enum State {
-        WALKING_UP, WALKING_DOWN, WALKING_RIGHT, WALKING_LEFT,
-        DYING
-    }
 
-    private State currentState;
+
     private Rectangle boundingBox;
 
     public Hare() {
         super(HARE_RESPAWN_X, HARE_RESPAWN_Y, HARE_WIDTH, HARE_HEIGHT, HARE_SPEED);
         this.boundingBox = new Rectangle(64, 32, 128, 32);
         AnimationController.loadHareAnimations(getAnimationSet());
-        currentState = State.WALKING_LEFT;
-    }
-
-    public void setCurrentState(State state) {
-        this.currentState = state;
     }
 
     @Override
@@ -62,7 +53,7 @@ public class Hare extends DynamicObject {
             setCurrentState(State.WALKING_LEFT);
         }
 
-        if (currentState == State.WALKING_RIGHT) {
+        if (getCurrentState() == State.WALKING_RIGHT) {
             moveRight();
         } else {
             moveLeft();
@@ -72,7 +63,7 @@ public class Hare extends DynamicObject {
     @Override
     public void render(SpriteBatch spriteBatch) {
         TextureRegion frame = getAnimationSet().get("walking_down").getKeyFrame(getElapsedTime());
-        switch (currentState) {
+        switch (getCurrentState()) {
             case WALKING_UP:
                 frame = getAnimationSet().get("walking_up").getKeyFrame(getElapsedTime());
                 break;

@@ -13,6 +13,8 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import uet.thainguyen.game.controllers.MapController;
+import uet.thainguyen.game.entities.dynamics.DynamicObject;
+import uet.thainguyen.game.entities.dynamics.Enemy;
 import uet.thainguyen.game.entities.explosion.Bomb;
 import uet.thainguyen.game.entities.explosion.Flame;
 import uet.thainguyen.game.entities.items.*;
@@ -40,8 +42,8 @@ public class PlayScreen implements Screen {
     WallLayer wallLayer;
     BrickLayer brickLayer;
 
-    Hare hare;
     Bomman bomman;
+    ArrayList<Enemy> enemies;
 
     ArrayList<Bomb> bombs;
     ArrayList<Item> items;
@@ -68,20 +70,24 @@ public class PlayScreen implements Screen {
         items.add(new BombBagItem(64, 160));
         items.add(new SuperBombItem(96, 160));
 
-        hare = new Hare();
         bomman = new Bomman();
         bombs = bomman.getBombs();
+
+        enemies = new ArrayList<>();
+        enemies.add(new Hare());
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1, 0, 0, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         elapsedTime += Gdx.graphics.getDeltaTime();
 
         gameMap.update();
-        hare.update(gameMap);
+        for (Enemy enemy : enemies) {
+            enemy.update(gameMap);
+        }
         bomman.update(gameMap);
 
         detectCollisions();
@@ -96,7 +102,9 @@ public class PlayScreen implements Screen {
         renderer.getBatch().end();
 
         spriteBatch.begin();
-        hare.render(spriteBatch);
+        for (Enemy enemy : enemies) {
+            enemy.render(spriteBatch);
+        }
         bomman.render(spriteBatch);
         spriteBatch.end();
     }
@@ -105,41 +113,48 @@ public class PlayScreen implements Screen {
 
         MapObjects collisionObjects = collisionLayer.getObjects();
 
-        //detect collision between bomman and map objects
-        for(RectangleMapObject collisionObject : collisionObjects.getByType(RectangleMapObject.class)) {
-            if (Intersector.overlaps(collisionObject.getRectangle(), bomman.getBody())) {
-                bomman.returnPreviousPos(collisionObject.getRectangle());
-            }
-        }
+        checkCollisionPlayerAndMap(collisionObjects);
 
-        //detect collision between bomman and flames
         if (!bombs.isEmpty()) {
             for (Bomb bomb : bombs) {
                 if (bomb.getCurrentState() == Bomb.State.EXPLODING) {
                     ArrayList<Flame> flames = bomb.getFlames();
                     for (Flame flame : flames) {
-                        if (Intersector.overlaps(bomman.getBody(), flame.getBody())) {
-                            bomman.setCurrentState(Bomman.State.DYING);
-                        }
+                        checkCollisionFlamesAndPlayer(flame);
 
-                        for(RectangleMapObject collisionObject : collisionObjects.getByType(RectangleMapObject.class)) {
-                            TiledMapTileLayer brickLayer = (TiledMapTileLayer) gameMap.getTiledMap().getLayers().get("Brick");
-                            if (Intersector.overlaps(collisionObject.getRectangle(), flame.getBody())
-                                    && collisionObject.getName().equals("Brick")) {
-                                Cell brickCell = brickLayer.getCell((int) (collisionObject.getRectangle().getX() / TILE_WIDTH),
-                                        (int) (collisionObject.getRectangle().getY() / TILE_HEIGHT));
-                                if (brickCell != null) {
-                                    brickCell.setTile(null);
-                                    collisionObjects.remove(collisionObject);
-                                }
-                            }
-                        }
+                        checkCollisionFlamesAndEnemies(flame);
+
+                        checkCollisionFlamesAndBombs(flame);
+
+                        checkCollisionFlamesAndBricks(collisionObjects, flame);
                     }
                 }
             }
         }
 
-        //detect collision between bomman and items
+        checkCollisionPlayerAndItems();
+
+        checkCollisionPlayerAndEnemies();
+    }
+
+    public void checkCollisionPlayerAndMap(MapObjects collisionObjects) {
+        for(RectangleMapObject collisionObject : collisionObjects.getByType(RectangleMapObject.class)) {
+            if (Intersector.overlaps(collisionObject.getRectangle(), bomman.getBody())) {
+                bomman.returnPreviousPos(collisionObject.getRectangle());
+            }
+        }
+    }
+
+    public void checkCollisionPlayerAndEnemies() {
+        for (Enemy enemy : enemies) {
+            if (Intersector.overlaps(enemy.getBody(), bomman.getBody())) {
+                bomman.setCurrentState(Bomman.State.DYING);
+                break;
+            }
+        }
+    }
+
+    public void checkCollisionPlayerAndItems() {
         ArrayList<Item> usedItems = new ArrayList<>();
         for (Item item : items) {
             if (Intersector.overlaps(item.getBody(), bomman.getBody())) {
@@ -151,6 +166,48 @@ public class PlayScreen implements Screen {
         }
         items.removeAll(usedItems);
         usedItems.clear();
+    }
+
+    public void checkCollisionFlamesAndPlayer(Flame flame) {
+        if (Intersector.overlaps(bomman.getBody(), flame.getBody())) {
+            bomman.setCurrentState(Bomman.State.DYING);
+        }
+    }
+
+    public void checkCollisionFlamesAndEnemies(Flame flame) {
+        ArrayList<Enemy> deadEnemies = new ArrayList<>();
+        for (Enemy enemy : enemies) {
+            if (Intersector.overlaps(flame.getBody(), enemy.getBody())) {
+                enemy.setCurrentState(Enemy.State.DYING);
+                deadEnemies.add(enemy);
+            }
+        }
+        enemies.removeAll(deadEnemies);
+        deadEnemies.clear();
+    }
+
+    public void checkCollisionFlamesAndBombs(Flame flame) {
+        for (Bomb bomb : bombs) {
+            if (Intersector.overlaps(bomb.getBody(), flame.getBody())) {
+                bomb.setCurrentState(Bomb.State.EXPLODING);
+                bomb.setElapsedTime(Bomb.BOMB_TIME_LIMIT);
+            }
+        }
+    }
+
+    public void checkCollisionFlamesAndBricks(MapObjects collisionObjects, Flame flame) {
+        for(RectangleMapObject collisionObject : collisionObjects.getByType(RectangleMapObject.class)) {
+            TiledMapTileLayer brickLayer = (TiledMapTileLayer) gameMap.getTiledMap().getLayers().get("Brick");
+            if (Intersector.overlaps(collisionObject.getRectangle(), flame.getBody())
+                    && collisionObject.getName().equals("Brick")) {
+                Cell brickCell = brickLayer.getCell((int) (collisionObject.getRectangle().getX() / TILE_WIDTH),
+                        (int) (collisionObject.getRectangle().getY() / TILE_HEIGHT));
+                if (brickCell != null) {
+                    brickCell.setTile(null);
+                    collisionObjects.remove(collisionObject);
+                }
+            }
+        }
     }
 
     @Override
