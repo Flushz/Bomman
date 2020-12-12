@@ -12,6 +12,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
+import uet.thainguyen.game.BommanGame;
 import uet.thainguyen.game.controllers.MapController;
 import uet.thainguyen.game.entities.dynamics.DynamicObject;
 import uet.thainguyen.game.entities.dynamics.Enemy;
@@ -27,12 +28,12 @@ import uet.thainguyen.game.entities.dynamics.Bomman;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class PlayScreen implements Screen {
+public class GamePlayScreen implements Screen {
 
     private static int TILE_WIDTH = 32;
     private static int TILE_HEIGHT = 32;
 
-    SpriteBatch spriteBatch;
+    BommanGame game;
 
     OrthographicCamera camera;
     OrthogonalTiledMapRenderer renderer;
@@ -51,8 +52,8 @@ public class PlayScreen implements Screen {
 
     private float elapsedTime = 0;
 
-    public PlayScreen() {
-        spriteBatch = new SpriteBatch();
+    public GamePlayScreen(BommanGame game) {
+        this.game = game;
 
         camera = new OrthographicCamera();
         gameMap = new MapController(camera);
@@ -84,29 +85,33 @@ public class PlayScreen implements Screen {
 
         elapsedTime += Gdx.graphics.getDeltaTime();
 
-        gameMap.update();
-        for (Enemy enemy : enemies) {
-            enemy.update(gameMap);
-        }
-        bomman.update(gameMap);
+        if (bomman.getCurrentState() == Bomman.State.DYING && elapsedTime % 3.0f < 0.05) {
+            game.setScreen(new GameOverScreen(game));
+        } else {
+            gameMap.update();
+            for (Enemy enemy : enemies) {
+                enemy.update(gameMap);
+            }
+            bomman.update(gameMap);
 
-        detectCollisions();
+            detectCollisions();
 
-        renderer.getBatch().begin();
-        renderer.renderTileLayer(grassLayer.getStaticLayer());
-        renderer.renderTileLayer(wallLayer.getStaticLayer());
-        for (Item item : items) {
-            item.render((SpriteBatch) renderer.getBatch());
-        }
-        renderer.renderTileLayer(brickLayer.getStaticLayer());
-        renderer.getBatch().end();
+            renderer.getBatch().begin();
+            renderer.renderTileLayer(grassLayer.getStaticLayer());
+            renderer.renderTileLayer(wallLayer.getStaticLayer());
+            for (Item item : items) {
+                item.render((SpriteBatch) renderer.getBatch());
+            }
+            renderer.renderTileLayer(brickLayer.getStaticLayer());
+            renderer.getBatch().end();
 
-        spriteBatch.begin();
-        for (Enemy enemy : enemies) {
-            enemy.render(spriteBatch);
+            game.spriteBatch.begin();
+            for (Enemy enemy : enemies) {
+                enemy.render(game.spriteBatch);
+            }
+            bomman.render(game.spriteBatch);
+            game.spriteBatch.end();
         }
-        bomman.render(spriteBatch);
-        spriteBatch.end();
     }
 
     public void detectCollisions() {
@@ -212,7 +217,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
-        spriteBatch.dispose();
+        game.spriteBatch.dispose();
         gameMap.getTiledMap().dispose();
     }
 

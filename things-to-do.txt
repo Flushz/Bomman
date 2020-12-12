@@ -9,11 +9,11 @@
 		+ Auto chasing
 		+ Powerful (increase speed, auto chasing)
 		+ Boss (have health)
-	- Game menu screen
-	- Game over screen
+[DONE]	- Game menu screen
+[DONE]	- Game over screen
 	- Game stages
 	- Sound and music
-	- Funtional buttons
+[DONE]	- Funtional buttons
 	- Multiple player mode
 	- BOT and items random generating
 	- High score
