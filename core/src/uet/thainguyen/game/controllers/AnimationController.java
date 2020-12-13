@@ -30,6 +30,7 @@ public class AnimationController {
     private static final String SUPER_BOMB_ITEM_KEY = "super_bomb_item";
     private static final String BOMB_SPACE_ITEM_KEY = "bomb_bag_item";
     private static final String SLOW_ITEM_KEY = "slow_item";
+    private static final String LIFE_ITEM_KEY = "life_item";
 
     private static final int PLAYER_FRAME_COLS = 4;
     private static final int PLAYER_FRAME_ROWS = 6;
@@ -225,6 +226,11 @@ public class AnimationController {
                 itemBackgroundRow = 2;
                 itemImageRow = 11;
                 itemImageCol = 5;
+                break;
+            case LIFE_ITEM_KEY:
+                itemBackgroundRow = 3;
+                itemImageRow = 11;
+                itemImageCol = 6;
                 break;
         }
 

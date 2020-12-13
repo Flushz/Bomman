@@ -18,4 +18,5 @@
 	- BOT and items random generating
 	- High score
 	- Skin shop
-	- Timer
+[DONE]	- Timer
+	- Power bomb instant kill Error

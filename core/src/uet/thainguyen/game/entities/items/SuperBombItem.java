@@ -2,9 +2,6 @@ package uet.thainguyen.game.entities.items;
 
 import uet.thainguyen.game.controllers.AnimationController;
 import uet.thainguyen.game.entities.dynamics.Bomman;
-import uet.thainguyen.game.entities.explosion.Bomb;
-
-import java.util.ArrayList;
 
 public class SuperBombItem extends Item {
 

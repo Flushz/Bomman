@@ -64,7 +64,6 @@ public class BommanGame extends Game {
 	
 	@Override
 	public void dispose () {
-		spriteBatch.dispose();
 		buttonOver.dispose();
 		buttonReleased.dispose();
 	}

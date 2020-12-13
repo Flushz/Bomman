@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -22,6 +21,8 @@ public class GameOverScreen implements Screen {
     Label gameOverLabel;
 
     TextButton playAgainButton;
+    TextButton backToMenuButton;
+    TextButton exitButton;
 
     public GameOverScreen(final BommanGame game) {
 
@@ -34,7 +35,7 @@ public class GameOverScreen implements Screen {
         gameOverLabel.setFontScale(3);
 
         playAgainButton = new TextButton("Again", game.buttonStyle);
-        playAgainButton.setPosition(Gdx.graphics.getWidth() / 2.0f - 50, Gdx.graphics.getHeight() / 2.0f - 80);
+        playAgainButton.setPosition(Gdx.graphics.getWidth() / 2.0f - 50, Gdx.graphics.getHeight() / 2.0f - 100);
         playAgainButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -46,8 +47,38 @@ public class GameOverScreen implements Screen {
             }
         });
 
+        backToMenuButton = new TextButton("Back to Menu", game.buttonStyle);
+        backToMenuButton.setPosition(Gdx.graphics.getWidth() / 2.0f - 50, Gdx.graphics.getHeight() / 2.0f - 164);
+        backToMenuButton.addListener(new InputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                game.setScreen(new GameMenuScreen(game));
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+
+        exitButton = new TextButton("Exit", game.buttonStyle);
+        exitButton.setPosition(Gdx.graphics.getWidth() / 2.0f - 50, Gdx.graphics.getHeight() / 2.0f - 228);
+        exitButton.addListener(new InputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.exit();
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+
         gameOverStage.addActor(gameOverLabel);
         gameOverStage.addActor(playAgainButton);
+        gameOverStage.addActor(backToMenuButton);
+        gameOverStage.addActor(exitButton);
+
+        Gdx.input.setInputProcessor(gameOverStage);
     }
 
     @Override
@@ -86,6 +117,7 @@ public class GameOverScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        game.spriteBatch.dispose();
+        gameOverStage.dispose();
     }
 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObjects;
@@ -12,9 +13,12 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import uet.thainguyen.game.BommanGame;
 import uet.thainguyen.game.controllers.MapController;
-import uet.thainguyen.game.entities.dynamics.DynamicObject;
 import uet.thainguyen.game.entities.dynamics.Enemy;
 import uet.thainguyen.game.entities.explosion.Bomb;
 import uet.thainguyen.game.entities.explosion.Flame;
@@ -26,17 +30,17 @@ import uet.thainguyen.game.entities.dynamics.Hare;
 import uet.thainguyen.game.entities.dynamics.Bomman;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class GamePlayScreen implements Screen {
 
-    private static int TILE_WIDTH = 32;
-    private static int TILE_HEIGHT = 32;
+    private static final int TILE_WIDTH = 32;
+    private static final int TILE_HEIGHT = 32;
 
     BommanGame game;
 
     OrthographicCamera camera;
     OrthogonalTiledMapRenderer renderer;
+
     MapController gameMap;
     MapLayer collisionLayer;
     GrassLayer grassLayer;
@@ -45,10 +49,14 @@ public class GamePlayScreen implements Screen {
 
     Bomman bomman;
     ArrayList<Enemy> enemies;
-
     ArrayList<Bomb> bombs;
     ArrayList<Item> items;
-    ArrayList<Float> itemDuration;
+
+    Stage playStage;
+    Label timeLabel;
+    Label lifeLabel;
+    Texture aliveTexture;
+    Texture deadTexture;
 
     private float elapsedTime = 0;
 
@@ -57,12 +65,12 @@ public class GamePlayScreen implements Screen {
 
         camera = new OrthographicCamera();
         gameMap = new MapController(camera);
-        renderer = new OrthogonalTiledMapRenderer(gameMap.getTiledMap());
-        renderer.setView(camera);
         collisionLayer = gameMap.getTiledMap().getLayers().get(0);
         grassLayer = new GrassLayer(gameMap.getTiledMap());
         wallLayer = new WallLayer(gameMap.getTiledMap());
         brickLayer = new BrickLayer(gameMap.getTiledMap());
+        renderer = new OrthogonalTiledMapRenderer(gameMap.getTiledMap());
+        renderer.setView(camera);
 
         items = new ArrayList<>();
         items.add(new SlowItem(64, 128));
@@ -70,12 +78,27 @@ public class GamePlayScreen implements Screen {
         items.add(new SpeedItem(64, 32));
         items.add(new BombBagItem(64, 160));
         items.add(new SuperBombItem(96, 160));
+        items.add(new LifeItem(64, 192));
 
         bomman = new Bomman();
         bombs = bomman.getBombs();
-
         enemies = new ArrayList<>();
         enemies.add(new Hare());
+
+        playStage = new Stage(new ScreenViewport());
+
+        lifeLabel = new Label("x" + bomman.getLifeLeft(), game.labelStyle);
+        lifeLabel.setPosition(64, 440, Align.center);
+
+        timeLabel = new Label("Time: ", game.labelStyle);
+        timeLabel.setPosition(200, 440, Align.center);
+
+        deadTexture = new Texture(Gdx.files.internal("ui/img/dead_icon.png"));
+        aliveTexture = new Texture(Gdx.files.internal("ui/img/alive_icon.png"));
+
+        playStage.addActor(lifeLabel);
+        playStage.addActor(timeLabel);
+
     }
 
     @Override
@@ -83,35 +106,55 @@ public class GamePlayScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        updateTimer();
         elapsedTime += Gdx.graphics.getDeltaTime();
 
-        if (bomman.getCurrentState() == Bomman.State.DYING && elapsedTime % 3.0f < 0.05) {
-            game.setScreen(new GameOverScreen(game));
+        if (bomman.getCurrentState() == Bomman.State.DYING) {
+            if (elapsedTime % 3.0f < 0.05) {
+                game.setScreen(new GameOverScreen(game));
+            }
         } else {
-            gameMap.update();
-            for (Enemy enemy : enemies) {
-                enemy.update(gameMap);
-            }
             bomman.update(gameMap);
-
             detectCollisions();
-
-            renderer.getBatch().begin();
-            renderer.renderTileLayer(grassLayer.getStaticLayer());
-            renderer.renderTileLayer(wallLayer.getStaticLayer());
-            for (Item item : items) {
-                item.render((SpriteBatch) renderer.getBatch());
-            }
-            renderer.renderTileLayer(brickLayer.getStaticLayer());
-            renderer.getBatch().end();
-
-            game.spriteBatch.begin();
-            for (Enemy enemy : enemies) {
-                enemy.render(game.spriteBatch);
-            }
-            bomman.render(game.spriteBatch);
-            game.spriteBatch.end();
         }
+        gameMap.update();
+        for (Enemy enemy : enemies) {
+            enemy.update(gameMap);
+        }
+
+        renderer.getBatch().begin();
+        renderer.renderTileLayer(grassLayer.getStaticLayer());
+        renderer.renderTileLayer(wallLayer.getStaticLayer());
+        for (Item item : items) {
+            item.render((SpriteBatch) renderer.getBatch());
+        }
+        renderer.renderTileLayer(brickLayer.getStaticLayer());
+        renderer.getBatch().end();
+
+        game.spriteBatch.begin();
+        if (bomman.getCurrentState() == Bomman.State.DYING) {
+            game.spriteBatch.draw(deadTexture, 20, 420);
+        } else {
+            game.spriteBatch.draw(aliveTexture, 20, 420);
+        }
+        for (Enemy enemy : enemies) {
+            enemy.render(game.spriteBatch);
+        }
+        bomman.render(game.spriteBatch);
+        game.spriteBatch.end();
+
+        playStage.act();
+        playStage.draw();
+    }
+
+    public void updateTimer() {
+        int min = (299 - (int) elapsedTime) / 60;
+        int sec = elapsedTime % 60 == 0 ? 59 : 59 - (int) elapsedTime % 60;
+
+        String minutesLeft = String.format("%02d", min);
+        String secondsLeft = String.format("%02d", sec);
+
+        timeLabel.setText(minutesLeft + ":" + secondsLeft);
     }
 
     public void detectCollisions() {
@@ -119,7 +162,6 @@ public class GamePlayScreen implements Screen {
         MapObjects collisionObjects = collisionLayer.getObjects();
 
         checkCollisionPlayerAndMap(collisionObjects);
-
         if (!bombs.isEmpty()) {
             for (Bomb bomb : bombs) {
                 if (bomb.getCurrentState() == Bomb.State.EXPLODING) {
@@ -153,7 +195,8 @@ public class GamePlayScreen implements Screen {
     public void checkCollisionPlayerAndEnemies() {
         for (Enemy enemy : enemies) {
             if (Intersector.overlaps(enemy.getBody(), bomman.getBody())) {
-                bomman.setCurrentState(Bomman.State.DYING);
+                bomman.decreaseLife();
+                lifeLabel.setText("x" + bomman.getLifeLeft());
                 break;
             }
         }
@@ -164,6 +207,9 @@ public class GamePlayScreen implements Screen {
         for (Item item : items) {
             if (Intersector.overlaps(item.getBody(), bomman.getBody())) {
                 item.activate(bomman);
+                if (item instanceof LifeItem) {
+                    lifeLabel.setText("x" + bomman.getLifeLeft());
+                }
                 bomman.setItemDuration(Bomman.DEFAULT_PLAYER_ITEM_DURATION);
                 bomman.powerUp();
                 usedItems.add(item);
@@ -175,7 +221,8 @@ public class GamePlayScreen implements Screen {
 
     public void checkCollisionFlamesAndPlayer(Flame flame) {
         if (Intersector.overlaps(bomman.getBody(), flame.getBody())) {
-            bomman.setCurrentState(Bomman.State.DYING);
+            bomman.decreaseLife();
+            lifeLabel.setText("x" + bomman.getLifeLeft());
         }
     }
 
@@ -219,6 +266,9 @@ public class GamePlayScreen implements Screen {
     public void dispose() {
         game.spriteBatch.dispose();
         gameMap.getTiledMap().dispose();
+        playStage.dispose();
+        aliveTexture.dispose();
+        deadTexture.dispose();
     }
 
     @Override

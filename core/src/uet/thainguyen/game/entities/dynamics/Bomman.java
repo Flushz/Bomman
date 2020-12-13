@@ -21,6 +21,7 @@ public class Bomman extends DynamicObject {
     private static final float PLAYER_WIDTH = 32;
     private static final float PLAYER_HEIGHT = 32;
 
+    public static final int DEFAULT_PLAYER_LIFE_LEFT = 1;
     public static final int DEFAULT_PLAYER_SPEED = 2;
     public static final int DEFAULT_PLAYER_BOMB_LIMIT = 1;
     public static final int DEFAULT_PLAYER_BOMB_POWER = 1;
@@ -38,6 +39,7 @@ public class Bomman extends DynamicObject {
     }
 
     private State currentState;
+    private int lifeLeft;
     private int bombLimit;
     private int bombPower;
     private float itemDuration;
@@ -51,11 +53,12 @@ public class Bomman extends DynamicObject {
         super(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y, PLAYER_WIDTH, PLAYER_HEIGHT, DEFAULT_PLAYER_SPEED);
         AnimationController.loadPlayerAnimation(getAnimationSet());
         this.currentState = State.IDLING_DOWN;
-        this.isMoving = false;
-        this.isPoweredUp = false;
+        this.lifeLeft = DEFAULT_PLAYER_LIFE_LEFT;
         this.bombLimit = DEFAULT_PLAYER_BOMB_LIMIT;
         this.bombPower = DEFAULT_PLAYER_BOMB_POWER;
         this.itemDuration = DEFAULT_PLAYER_ITEM_DURATION;
+        this.isMoving = false;
+        this.isPoweredUp = false;
         this.bombs = new ArrayList<>();
         this.flames = new ArrayList<>();
     }
@@ -65,6 +68,21 @@ public class Bomman extends DynamicObject {
         setBombLimit(DEFAULT_PLAYER_BOMB_LIMIT);
         setItemDuration(DEFAULT_PLAYER_ITEM_DURATION);
         setBombPower(DEFAULT_PLAYER_BOMB_POWER);
+    }
+
+    public int getLifeLeft() {
+        return this.lifeLeft;
+    }
+
+    public void setLifeLeft(int lifeLeft) {
+        this.lifeLeft = lifeLeft;
+    }
+
+    public void decreaseLife() {
+        this.lifeLeft -= 1;
+        if (this.lifeLeft <= 0) {
+            setCurrentState(State.DYING);
+        }
     }
 
     public boolean isPoweredUp() {
