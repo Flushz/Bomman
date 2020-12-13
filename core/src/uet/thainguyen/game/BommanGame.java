@@ -29,14 +29,14 @@ public class BommanGame extends Game {
 		spriteBatch = new SpriteBatch();
 
 		buttonOver = new Texture(Gdx.files.internal("ui/buttons/play_over.png"));
-		buttonReleased = new Texture(Gdx.files.internal("ui/buttons/play.png"));
+		buttonReleased = new Texture(Gdx.files.internal("ui/buttons/play_up.png"));
 
 		buttonStyle = new TextButton.TextButtonStyle();
 		buttonStyle.over = new TextureRegionDrawable(new TextureRegion(buttonOver));
 		buttonStyle.up = new TextureRegionDrawable(new TextureRegion(buttonReleased));
 		buttonStyle.font = generateBitmapFont();
 		buttonStyle.fontColor = Color.valueOf("ffffff");
-		buttonStyle.overFontColor = Color.valueOf("e9fea1");
+		buttonStyle.overFontColor = Color.valueOf("583d72");
 
 		labelStyle = new Label.LabelStyle();
 		labelStyle.font = generateBitmapFont();

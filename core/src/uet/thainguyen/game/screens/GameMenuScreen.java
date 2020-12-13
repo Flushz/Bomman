@@ -33,7 +33,7 @@ public class GameMenuScreen extends InputAdapter implements Screen {
         backgroundTexture = new Texture(Gdx.files.internal("ui/img/background.png"));
 
         playButton = new TextButton("Play", game.buttonStyle);
-        playButton.setPosition(380, 200);
+        playButton.setPosition(350, 180);
         playButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -46,7 +46,7 @@ public class GameMenuScreen extends InputAdapter implements Screen {
         });
 
         exitButton = new TextButton("Exit", game.buttonStyle);
-        exitButton.setPosition(380, 126);
+        exitButton.setPosition(350, 106);
         exitButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {

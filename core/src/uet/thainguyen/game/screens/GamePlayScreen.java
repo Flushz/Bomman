@@ -103,7 +103,7 @@ public class GamePlayScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         updateTimer();
@@ -155,6 +155,10 @@ public class GamePlayScreen implements Screen {
         String secondsLeft = String.format("%02d", sec);
 
         timeLabel.setText(minutesLeft + ":" + secondsLeft);
+
+        if (min == 0 && sec == 0) {
+            game.setScreen(new GameOverScreen(game));
+        }
     }
 
     public void detectCollisions() {
@@ -167,7 +171,9 @@ public class GamePlayScreen implements Screen {
                 if (bomb.getCurrentState() == Bomb.State.EXPLODING) {
                     ArrayList<Flame> flames = bomb.getFlames();
                     for (Flame flame : flames) {
-                        checkCollisionFlamesAndPlayer(flame);
+                        if (!bomman.isInvincible()) {
+                            checkCollisionFlamesAndPlayer(flame);
+                        }
 
                         checkCollisionFlamesAndEnemies(flame);
 

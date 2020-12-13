@@ -11,7 +11,7 @@ import java.io.File;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.addIcon("ui/img/icon_01.jpg", Files.FileType.Internal);
+		config.addIcon("ui/img/app_icon.jpg", Files.FileType.Internal);
 		config.title = "Super Bomman";
 		config.width = 544;
 		config.height = 480;

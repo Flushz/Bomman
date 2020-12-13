@@ -19,4 +19,4 @@
 	- High score
 	- Skin shop
 [DONE]	- Timer
-	- Power bomb instant kill Error
+[DONE]	- Power bomb instant kill Error

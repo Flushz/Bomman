@@ -2,7 +2,9 @@ package uet.thainguyen.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -20,6 +22,7 @@ public class GameOverScreen implements Screen {
     Stage gameOverStage;
     Label gameOverLabel;
 
+    Texture gameOverBackground;
     TextButton playAgainButton;
     TextButton backToMenuButton;
     TextButton exitButton;
@@ -29,13 +32,16 @@ public class GameOverScreen implements Screen {
         this.game = game;
         gameOverStage = new Stage(new ScreenViewport());
 
+        gameOverBackground = new Texture(Gdx.files.internal("ui/img/game_over_background_00.png"));
+
+        game.labelStyle.fontColor = Color.valueOf("ffffff");
         gameOverLabel = new Label("You lose :(", game.labelStyle);
-        gameOverLabel.setPosition(Gdx.graphics.getWidth() / 2.0f - 50, Gdx.graphics.getHeight() / 2.0f);
+        gameOverLabel.setPosition(Gdx.graphics.getWidth() / 2.0f - 50, Gdx.graphics.getHeight() / 2.0f + 60);
         gameOverLabel.setAlignment(Align.center);
         gameOverLabel.setFontScale(3);
 
         playAgainButton = new TextButton("Again", game.buttonStyle);
-        playAgainButton.setPosition(Gdx.graphics.getWidth() / 2.0f - 50, Gdx.graphics.getHeight() / 2.0f - 100);
+        playAgainButton.setPosition(Gdx.graphics.getWidth() / 2.0f - 50, Gdx.graphics.getHeight() / 2.0f - 50);
         playAgainButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -47,8 +53,8 @@ public class GameOverScreen implements Screen {
             }
         });
 
-        backToMenuButton = new TextButton("Back to Menu", game.buttonStyle);
-        backToMenuButton.setPosition(Gdx.graphics.getWidth() / 2.0f - 50, Gdx.graphics.getHeight() / 2.0f - 164);
+        backToMenuButton = new TextButton("Menu", game.buttonStyle);
+        backToMenuButton.setPosition(Gdx.graphics.getWidth() / 2.0f - 50, Gdx.graphics.getHeight() / 2.0f - 114);
         backToMenuButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -61,7 +67,7 @@ public class GameOverScreen implements Screen {
         });
 
         exitButton = new TextButton("Exit", game.buttonStyle);
-        exitButton.setPosition(Gdx.graphics.getWidth() / 2.0f - 50, Gdx.graphics.getHeight() / 2.0f - 228);
+        exitButton.setPosition(Gdx.graphics.getWidth() / 2.0f - 50, Gdx.graphics.getHeight() / 2.0f - 178);
         exitButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -83,8 +89,12 @@ public class GameOverScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClearColor(255, 202, 123, 0.5f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        game.spriteBatch.begin();
+        game.spriteBatch.draw(gameOverBackground, 0, 0);
+        game.spriteBatch.end();
 
         gameOverStage.act();
         gameOverStage.draw();

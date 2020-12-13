@@ -25,6 +25,7 @@ public class Bomman extends DynamicObject {
     public static final int DEFAULT_PLAYER_SPEED = 2;
     public static final int DEFAULT_PLAYER_BOMB_LIMIT = 1;
     public static final int DEFAULT_PLAYER_BOMB_POWER = 1;
+    public static final int DEFAULT_PLAYER_INVINCIBILITY_DURATION = 3;
     public static final int DEFAULT_PLAYER_ITEM_DURATION = 10;
     public static final int ITEM_INEFFECTIVE_TIME = 0;
 
@@ -43,8 +44,10 @@ public class Bomman extends DynamicObject {
     private int bombLimit;
     private int bombPower;
     private float itemDuration;
+    private float invincibilityDuration;
     private boolean isMoving;
     private boolean isPoweredUp;
+    private boolean isInvincible;
 
     private ArrayList<Bomb> bombs;
     private ArrayList<Flame> flames;
@@ -56,9 +59,11 @@ public class Bomman extends DynamicObject {
         this.lifeLeft = DEFAULT_PLAYER_LIFE_LEFT;
         this.bombLimit = DEFAULT_PLAYER_BOMB_LIMIT;
         this.bombPower = DEFAULT_PLAYER_BOMB_POWER;
+        this.invincibilityDuration = DEFAULT_PLAYER_INVINCIBILITY_DURATION;
         this.itemDuration = DEFAULT_PLAYER_ITEM_DURATION;
         this.isMoving = false;
         this.isPoweredUp = false;
+        this.isInvincible = false;
         this.bombs = new ArrayList<>();
         this.flames = new ArrayList<>();
     }
@@ -70,6 +75,10 @@ public class Bomman extends DynamicObject {
         setBombPower(DEFAULT_PLAYER_BOMB_POWER);
     }
 
+    public boolean isInvincible() {
+        return this.isInvincible;
+    }
+
     public int getLifeLeft() {
         return this.lifeLeft;
     }
@@ -79,14 +88,13 @@ public class Bomman extends DynamicObject {
     }
 
     public void decreaseLife() {
-        this.lifeLeft -= 1;
-        if (this.lifeLeft <= 0) {
-            setCurrentState(State.DYING);
+        if (!isInvincible) {
+            this.lifeLeft -= 1;
+            if (this.lifeLeft <= 0) {
+                setCurrentState(State.DYING);
+            }
+            isInvincible = true;
         }
-    }
-
-    public boolean isPoweredUp() {
-        return this.isPoweredUp;
     }
 
     public void powerUp() {
@@ -183,8 +191,15 @@ public class Bomman extends DynamicObject {
 
     @Override
     public void update(MapController gameMap) {
-        if (isPoweredUp()) {
+        if (isPoweredUp) {
             updateItemDuration();
+        }
+        if (isInvincible) {
+            invincibilityDuration -= Gdx.graphics.getDeltaTime();
+            if (invincibilityDuration < 0) {
+                isInvincible = false;
+                invincibilityDuration = DEFAULT_PLAYER_INVINCIBILITY_DURATION;
+            }
         }
         handleInput();
         checkState();
@@ -204,7 +219,6 @@ public class Bomman extends DynamicObject {
     private void handleInput() {
         if (Gdx.input.isKeyPressed(Input.Keys.ANY_KEY)) {
             isMoving = true;
-
             if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
                 setCurrentState(State.WALKING_UP);
                 moveUp();
