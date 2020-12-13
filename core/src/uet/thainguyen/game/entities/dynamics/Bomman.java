@@ -55,7 +55,7 @@ public class Bomman extends DynamicObject {
     private ArrayList<Bomb> bombs;
     private ArrayList<Flame> flames;
 
-    public Bomman(int player_respawn_x, int player_respawn_y) {
+    public Bomman(float player_respawn_x, float player_respawn_y) {
         super(player_respawn_x, player_respawn_y, PLAYER_WIDTH, PLAYER_HEIGHT, DEFAULT_PLAYER_SPEED);
         AnimationController.loadPlayerAnimation(getAnimationSet());
         this.soundController = new SoundController();

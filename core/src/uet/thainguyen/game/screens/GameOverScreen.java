@@ -48,12 +48,12 @@ public class GameOverScreen implements Screen {
         gameOverLabel.setAlignment(Align.center);
         gameOverLabel.setFontScale(3);
 
-        playAgainButton = new TextButton("Again", game.buttonStyle);
+        playAgainButton = new TextButton("Try again", game.buttonStyle);
         playAgainButton.setPosition(Gdx.graphics.getWidth() / 2.0f - 50, Gdx.graphics.getHeight() / 2.0f - 50);
         playAgainButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new GamePlayScreen(game));
+                game.setScreen(new GamePlayScreen(game, 1));
                 dispose();
             }
             @Override

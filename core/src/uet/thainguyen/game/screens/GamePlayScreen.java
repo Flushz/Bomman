@@ -63,7 +63,7 @@ public class GamePlayScreen implements Screen {
 
     private float elapsedTime = 0;
 
-    public GamePlayScreen(BommanGame game) {
+    public GamePlayScreen(BommanGame game, int level) {
         this.game = game;
 
         soundController = new SoundController();
@@ -72,8 +72,8 @@ public class GamePlayScreen implements Screen {
         soundController.getGameMusic().setLooping(true);
 
         camera = new OrthographicCamera();
-        gameMap = new MapController(camera);
-        collisionLayer = gameMap.getTiledMap().getLayers().get(0);
+        gameMap = new MapController(camera, level);
+        collisionLayer = gameMap.getTiledMap().getLayers().get("CollisionLayer");
         grassLayer = new GrassLayer(gameMap.getTiledMap());
         wallLayer = new WallLayer(gameMap.getTiledMap());
         brickLayer = new BrickLayer(gameMap.getTiledMap());
@@ -81,18 +81,39 @@ public class GamePlayScreen implements Screen {
         renderer.setView(camera);
 
         items = new ArrayList<>();
-        items.add(new SlowItem(64, 128));
-        items.add(new SpeedItem(64, 64));
-        items.add(new SpeedItem(64, 32));
-        items.add(new BombBagItem(64, 160));
-        items.add(new SuperBombItem(96, 160));
-        items.add(new LifeItem(64, 192));
+        for (int i = 0; i < 6; ++i) {
+            items.add(new SlowItem(gameMap.generateX(), gameMap.generateY()));
+            items.add(new SpeedItem(gameMap.generateX(), gameMap.generateY()));
+            items.add(new BombBagItem(gameMap.generateX(), gameMap.generateY()));
+            items.add(new LifeItem(gameMap.generateX(), gameMap.generateY()));
+            items.add(new SuperBombItem(gameMap.generateX(), gameMap.generateY()));
+        }
 
-        bomman = new Bomman();
+        bomman = new Bomman(gameMap.getPlayerPos().x, gameMap.getPlayerPos().y);
         bombs = bomman.getBombs();
+
         enemies = new ArrayList<>();
-        enemies.add(new Hare());
-        enemies.add(new Octopus(96,32));
+        switch (level) {
+            case 1:
+                enemies.add(new Hare(MapController.HARE1_LEVEL_1_X,MapController.HARE1_LEVEL_1_Y));
+                enemies.add(new Hare(MapController.HARE2_LEVEL_1_X,MapController.HARE2_LEVEL_1_Y));
+                enemies.add(new Hare(MapController.HARE3_LEVEL_1_X,MapController.HARE3_LEVEL_1_Y));
+
+                enemies.add(new Octopus(MapController.OCTOPUS1_LEVEL_1_X,MapController.OCTOPUS1_LEVEL_1_Y));
+                enemies.add(new Octopus(MapController.OCTOPUS2_LEVEL_1_X,MapController.OCTOPUS2_LEVEL_1_Y));
+                break;
+            case 2:
+                enemies.add(new Hare(MapController.HARE1_LEVEL_2_X,MapController.HARE1_LEVEL_2_Y));
+                enemies.add(new Hare(MapController.HARE2_LEVEL_2_X,MapController.HARE2_LEVEL_2_Y));
+                enemies.add(new Hare(MapController.HARE3_LEVEL_2_X,MapController.HARE3_LEVEL_2_Y));
+
+                enemies.add(new Octopus(MapController.OCTOPUS1_LEVEL_2_X,MapController.OCTOPUS1_LEVEL_2_Y));
+                enemies.add(new Octopus(MapController.OCTOPUS2_LEVEL_2_X,MapController.OCTOPUS2_LEVEL_2_Y));
+                enemies.add(new Octopus(MapController.OCTOPUS3_LEVEL_2_X,MapController.OCTOPUS3_LEVEL_2_Y));
+                break;
+
+        }
+
 
         playStage = new Stage(new ScreenViewport());
 
@@ -135,10 +156,10 @@ public class GamePlayScreen implements Screen {
 
         renderer.getBatch().begin();
         renderer.renderTileLayer(grassLayer.getStaticLayer());
-        renderer.renderTileLayer(wallLayer.getStaticLayer());
         for (Item item : items) {
             item.render((SpriteBatch) renderer.getBatch());
         }
+        renderer.renderTileLayer(wallLayer.getStaticLayer());
         renderer.renderTileLayer(brickLayer.getStaticLayer());
         renderer.getBatch().end();
 

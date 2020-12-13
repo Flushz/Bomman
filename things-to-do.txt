@@ -11,11 +11,11 @@
 		+ Boss (have health)
 [DONE]	- Game menu screen
 [DONE]	- Game over screen
-	- Game stages
+[DONE]	- Game stages
 [DONE]	- Sound and music
 [DONE]	- Funtional buttons
 	- Multiple player mode
-	- BOT and items random generating
+[H-DONE]- BOT and items random generating
 	- High score
 	- Skin shop
 [DONE]	- Timer

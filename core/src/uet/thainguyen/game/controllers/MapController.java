@@ -8,10 +8,52 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public class MapController {
 
-    private static final float PLAYER_RESPAWN_X = 64;
-    private static final float PLAYER_RESPAWN_Y = 352;
+    private static final int TILE_WIDTH = 32;
+    private static final int TILE_HEIGHT = 32;
+
+    private static final float PLAYER_RESPAWN_X_LEVEL_1 = 64;
+    private static final float PLAYER_RESPAWN_Y_LEVEL_1 = 352;
+
+    private static final float PLAYER_RESPAWN_X_LEVEL_2 = 64;
+    private static final float PLAYER_RESPAWN_Y_LEVEL_2 = 320;
+
+    public static final float HARE1_LEVEL_1_X = 64;
+    public static final float HARE1_LEVEL_1_Y = 32;
+
+    public static final float HARE2_LEVEL_1_X = 448;
+    public static final float HARE2_LEVEL_1_Y = 32;
+
+    public static final float HARE3_LEVEL_1_X = 384;
+    public static final float HARE3_LEVEL_1_Y = 352;
+
+    public static final float HARE1_LEVEL_2_X = 64;
+    public static final float HARE1_LEVEL_2_Y = 320;
+
+    public static final float HARE2_LEVEL_2_X = 64;
+    public static final float HARE2_LEVEL_2_Y = 320;
+
+    public static final float HARE3_LEVEL_2_X = 64;
+    public static final float HARE3_LEVEL_2_Y = 320;
+
+    public static final float OCTOPUS1_LEVEL_1_X = 64;
+    public static final float OCTOPUS1_LEVEL_1_Y = 224;
+
+    public static final float OCTOPUS2_LEVEL_1_X = 64;
+    public static final float OCTOPUS2_LEVEL_1_Y = 32;
+    
+    public static final float OCTOPUS1_LEVEL_2_X = 64;
+    public static final float OCTOPUS1_LEVEL_2_Y = 320;
+
+    public static final float OCTOPUS2_LEVEL_2_X = 64;
+    public static final float OCTOPUS2_LEVEL_2_Y = 320;
+
+    public static final float OCTOPUS3_LEVEL_2_X = 64;
+    public static final float OCTOPUS3_LEVEL_2_Y = 320;
 
     private TiledMap tiledMap;
     private OrthographicCamera camera;
@@ -29,14 +71,38 @@ public class MapController {
         camera.setToOrtho(false, viewportWidth, viewportHeight);
         camera.update();
 
+        playerPos = new Vector2();
+
         switch (level) {
             case 1:
+                playerPos.set(PLAYER_RESPAWN_X_LEVEL_1, PLAYER_RESPAWN_Y_LEVEL_1);
+                tiledMap = new TmxMapLoader().load("map/level_01.tmx");
+                break;
             case 2:
-                tiledMap = new TmxMapLoader().load("map/level_2.tmx");
+                playerPos.set(PLAYER_RESPAWN_X_LEVEL_2, PLAYER_RESPAWN_Y_LEVEL_2);
+                tiledMap = new TmxMapLoader().load("map/level_02.tmx");
                 break;
         }
 
         renderer = new OrthogonalTiledMapRenderer(tiledMap);
+    }
+
+    public Vector2 getPlayerPos() {
+        return playerPos;
+    }
+
+    public float generateX() {
+        Random randomX = new Random();
+        return randomX.nextInt(16) * TILE_WIDTH;
+    }
+
+    public float generateY() {
+        Random randomX = new Random();
+        return randomX.nextInt(12) * TILE_WIDTH;
+    }
+
+    public void setPlayerPos(Vector2 playerPos) {
+        this.playerPos = playerPos;
     }
 
     public void setTiledMap(TiledMap tiledMap) {

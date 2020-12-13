@@ -11,14 +11,12 @@ import uet.thainguyen.game.controllers.MapController;
 
 public class Hare extends Enemy {
 
-    private static final float HARE_RESPAWN_X = 96;
-    private static final float HARE_RESPAWN_Y = 32;
     private static final float HARE_WIDTH = 32;
     private static final float HARE_HEIGHT = 32;
     private static final int HARE_SPEED = 1;
 
-    public Hare() {
-        super(HARE_RESPAWN_X, HARE_RESPAWN_Y, HARE_WIDTH, HARE_HEIGHT, HARE_SPEED);
+    public Hare(float spawnX, float spawnY) {
+        super(spawnX, spawnY, HARE_WIDTH, HARE_HEIGHT, HARE_SPEED);
         AnimationController.loadHareAnimations(getAnimationSet());
     }
 

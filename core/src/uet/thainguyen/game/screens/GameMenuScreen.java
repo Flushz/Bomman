@@ -41,7 +41,7 @@ public class GameMenuScreen extends InputAdapter implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 soundController.getMenuScreenMusic().stop();
-                game.setScreen(new GamePlayScreen(game));
+                game.setScreen(new GamePlayScreen(game, 1));
                 dispose();
             }
             @Override
