@@ -40,7 +40,7 @@ public class Bomman extends DynamicObject {
         DYING
     }
 
-    private SoundController soundController;
+    private final SoundController soundController;
 
     private State currentState;
     private int lifeLeft;
@@ -55,8 +55,8 @@ public class Bomman extends DynamicObject {
     private ArrayList<Bomb> bombs;
     private ArrayList<Flame> flames;
 
-    public Bomman() {
-        super(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y, PLAYER_WIDTH, PLAYER_HEIGHT, DEFAULT_PLAYER_SPEED);
+    public Bomman(int player_respawn_x, int player_respawn_y) {
+        super(player_respawn_x, player_respawn_y, PLAYER_WIDTH, PLAYER_HEIGHT, DEFAULT_PLAYER_SPEED);
         AnimationController.loadPlayerAnimation(getAnimationSet());
         this.soundController = new SoundController();
         this.currentState = State.IDLING_DOWN;

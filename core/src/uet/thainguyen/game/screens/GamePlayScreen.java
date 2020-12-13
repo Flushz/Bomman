@@ -21,6 +21,7 @@ import uet.thainguyen.game.BommanGame;
 import uet.thainguyen.game.controllers.MapController;
 import uet.thainguyen.game.controllers.SoundController;
 import uet.thainguyen.game.entities.dynamics.Enemy;
+import uet.thainguyen.game.entities.dynamics.Octopus;
 import uet.thainguyen.game.entities.explosion.Bomb;
 import uet.thainguyen.game.entities.explosion.Flame;
 import uet.thainguyen.game.entities.items.*;
@@ -91,6 +92,7 @@ public class GamePlayScreen implements Screen {
         bombs = bomman.getBombs();
         enemies = new ArrayList<>();
         enemies.add(new Hare());
+        enemies.add(new Octopus(96,32));
 
         playStage = new Stage(new ScreenViewport());
 

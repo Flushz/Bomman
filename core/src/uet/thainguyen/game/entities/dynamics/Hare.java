@@ -2,6 +2,9 @@ package uet.thainguyen.game.entities.dynamics;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import uet.thainguyen.game.controllers.AnimationController;
 import uet.thainguyen.game.controllers.MapController;
@@ -14,13 +17,8 @@ public class Hare extends Enemy {
     private static final float HARE_HEIGHT = 32;
     private static final int HARE_SPEED = 1;
 
-
-
-    private Rectangle boundingBox;
-
     public Hare() {
         super(HARE_RESPAWN_X, HARE_RESPAWN_Y, HARE_WIDTH, HARE_HEIGHT, HARE_SPEED);
-        this.boundingBox = new Rectangle(64, 32, 128, 32);
         AnimationController.loadHareAnimations(getAnimationSet());
     }
 
@@ -47,16 +45,20 @@ public class Hare extends Enemy {
     @Override
     public void update(MapController gameMap) {
         updateElapsedTime();
-        if (getX() == boundingBox.getX()) {
-            setCurrentState(State.WALKING_RIGHT);
-        } else if (getX() + getWidth() == boundingBox.getX() + boundingBox.getWidth()) {
-            setCurrentState(State.WALKING_LEFT);
-        }
 
-        if (getCurrentState() == State.WALKING_RIGHT) {
-            moveRight();
-        } else {
-            moveLeft();
+        MapObjects collisionObjects = gameMap.getTiledMap().getLayers().get("CollisionLayer").getObjects();
+        checkCollisionHareAndMap(collisionObjects);
+    }
+
+    public void checkCollisionHareAndMap(MapObjects collisionObjects) {
+        for(RectangleMapObject collisionObject : collisionObjects.getByType(RectangleMapObject.class)) {
+            if (Intersector.overlaps(collisionObject.getRectangle(), this.getBody())) {
+                if (getCurrentState() == State.WALKING_LEFT) {
+                    setCurrentState(State.WALKING_RIGHT);
+                } else {
+                    setCurrentState(State.WALKING_LEFT);
+                }
+            }
         }
     }
 
@@ -71,9 +73,11 @@ public class Hare extends Enemy {
                 frame = getAnimationSet().get("walking_down").getKeyFrame(getElapsedTime());
                 break;
             case WALKING_RIGHT:
+                moveRight();
                 frame = getAnimationSet().get("walking_right").getKeyFrame(getElapsedTime());
                 break;
             case WALKING_LEFT:
+                moveLeft();
                 frame = getAnimationSet().get("walking_left").getKeyFrame(getElapsedTime());
                 break;
         }

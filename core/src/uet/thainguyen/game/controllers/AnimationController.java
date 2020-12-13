@@ -40,6 +40,10 @@ public class AnimationController {
     private static final int HARE_FRAME_ROWS = 4;
     private static final float HARE_FRAME_DURATION = 0.1f;
 
+    private static final int OCTOPUS_FRAME_COLS = 16;
+    private static final int OCTOPUS_FRAME_ROWS = 1;
+    private static final float OCTOPUS_FRAME_DURATION = 0.1f;
+
     private static final int BOMB_FRAME_COLS = 3;
     private static final int BOMB_FRAME_ROWS = 5;
     private static final float BOMB_FRAME_DURATION = 0.2f;
@@ -142,6 +146,69 @@ public class AnimationController {
         hareAnimations.put(WALKING_RIGHT_KEY, walkingRightAnimation);
         hareAnimations.put(WALKING_UP_KEY, walkingUpAnimation);
         hareAnimations.put(WALKING_DOWN_KEY, walkingDownAnimation);
+    }
+
+    public static void loadOctopusAnimations(HashMap<String, Animation<TextureRegion>> octopusAnimations) {
+        Texture octopusTexture = new Texture(Gdx.files.internal("sprites/enemies/Octopus.png"));
+        Texture octopusFlippedTexture = new Texture(Gdx.files.internal("sprites/enemies/Octopus_flipped.png"));
+        TextureRegion[][] octopusSprites = TextureRegion.split(octopusTexture,
+                octopusTexture.getWidth() / OCTOPUS_FRAME_COLS,
+                octopusTexture.getHeight() / OCTOPUS_FRAME_ROWS);
+        TextureRegion[][] octopusFlippedSprites = TextureRegion.split(octopusFlippedTexture,
+                octopusFlippedTexture.getWidth() / OCTOPUS_FRAME_COLS,
+                octopusFlippedTexture.getHeight() / OCTOPUS_FRAME_ROWS);
+
+        TextureRegion[] walkingUpFrames = new TextureRegion[4];
+        TextureRegion[] walkingDownFrames = new TextureRegion[4];
+        TextureRegion[] walkingLeftFrames = new TextureRegion[4];
+        TextureRegion[] walkingRightFrames = new TextureRegion[4];
+        TextureRegion[] deadFrames = new TextureRegion[4];
+
+        walkingDownFrames[0] = octopusSprites[0][0];
+        walkingDownFrames[1] = octopusSprites[0][1];
+        walkingDownFrames[2] = octopusSprites[0][2];
+        walkingDownFrames[3] = octopusSprites[0][3];
+
+        walkingUpFrames[0] = octopusSprites[0][4];
+        walkingUpFrames[1] = octopusSprites[0][5];
+        walkingUpFrames[2] = octopusSprites[0][6];
+        walkingUpFrames[3] = octopusSprites[0][7];
+
+        walkingLeftFrames[0] = octopusSprites[0][8];
+        walkingLeftFrames[1] = octopusSprites[0][9];
+        walkingLeftFrames[2] = octopusSprites[0][10];
+        walkingLeftFrames[3] = octopusSprites[0][11];
+
+        walkingRightFrames[0] = octopusFlippedSprites[0][4];
+        walkingRightFrames[1] = octopusFlippedSprites[0][5];
+        walkingRightFrames[2] = octopusFlippedSprites[0][6];
+        walkingRightFrames[3] = octopusFlippedSprites[0][7];
+
+        deadFrames[0] = octopusSprites[0][12];
+        deadFrames[1] = octopusSprites[0][13];
+        deadFrames[2] = octopusSprites[0][14];
+        deadFrames[3] = octopusSprites[0][15];
+
+        Animation<TextureRegion> walkingLeftAnimation = new Animation<>(OCTOPUS_FRAME_DURATION, walkingLeftFrames);
+        walkingLeftAnimation.setPlayMode(PlayMode.LOOP);
+
+        Animation<TextureRegion> walkingRightAnimation = new Animation<>(OCTOPUS_FRAME_DURATION, walkingRightFrames);
+        walkingRightAnimation.setPlayMode(PlayMode.LOOP);
+
+        Animation<TextureRegion> walkingUpAnimation = new Animation<>(OCTOPUS_FRAME_DURATION, walkingUpFrames);
+        walkingUpAnimation.setPlayMode(PlayMode.LOOP);
+
+        Animation<TextureRegion> walkingDownAnimation = new Animation<>(OCTOPUS_FRAME_DURATION, walkingDownFrames);
+        walkingDownAnimation.setPlayMode(PlayMode.LOOP);
+
+        Animation<TextureRegion> deadAnimation = new Animation<>(OCTOPUS_FRAME_DURATION, deadFrames);
+        deadAnimation.setPlayMode(PlayMode.NORMAL);
+
+        octopusAnimations.put(WALKING_LEFT_KEY, walkingLeftAnimation);
+        octopusAnimations.put(WALKING_RIGHT_KEY, walkingRightAnimation);
+        octopusAnimations.put(WALKING_UP_KEY, walkingUpAnimation);
+        octopusAnimations.put(WALKING_DOWN_KEY, walkingDownAnimation);
+        octopusAnimations.put(DYING_KEY, deadAnimation);
     }
 
     public static Animation<TextureRegion> loadBombAnimation() {
