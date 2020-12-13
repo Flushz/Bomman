@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import uet.thainguyen.game.controllers.AnimationController;
 import uet.thainguyen.game.controllers.MapController;
+import uet.thainguyen.game.controllers.SoundController;
 import uet.thainguyen.game.entities.explosion.Bomb;
 import uet.thainguyen.game.entities.explosion.Flame;
 
@@ -39,6 +40,8 @@ public class Bomman extends DynamicObject {
         DYING
     }
 
+    private SoundController soundController;
+
     private State currentState;
     private int lifeLeft;
     private int bombLimit;
@@ -55,6 +58,7 @@ public class Bomman extends DynamicObject {
     public Bomman() {
         super(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y, PLAYER_WIDTH, PLAYER_HEIGHT, DEFAULT_PLAYER_SPEED);
         AnimationController.loadPlayerAnimation(getAnimationSet());
+        this.soundController = new SoundController();
         this.currentState = State.IDLING_DOWN;
         this.lifeLeft = DEFAULT_PLAYER_LIFE_LEFT;
         this.bombLimit = DEFAULT_PLAYER_BOMB_LIMIT;
@@ -91,6 +95,7 @@ public class Bomman extends DynamicObject {
         if (!isInvincible) {
             this.lifeLeft -= 1;
             if (this.lifeLeft <= 0) {
+                soundController.getPlayerDieSound().play();
                 setCurrentState(State.DYING);
             }
             isInvincible = true;
@@ -233,6 +238,7 @@ public class Bomman extends DynamicObject {
                 moveLeft();
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
                 if (bombs.size() < bombLimit) {
+                    soundController.getBombDropSound().play();
                     int bombRespawnX = getBombRespawnX();
                     int bombRespawnY = getBombRespawnY();
                     bombs.add(new Bomb(bombRespawnX, bombRespawnY, bombPower));

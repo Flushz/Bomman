@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import uet.thainguyen.game.BommanGame;
 import uet.thainguyen.game.controllers.MapController;
+import uet.thainguyen.game.controllers.SoundController;
 import uet.thainguyen.game.entities.dynamics.Enemy;
 import uet.thainguyen.game.entities.explosion.Bomb;
 import uet.thainguyen.game.entities.explosion.Flame;
@@ -38,6 +39,7 @@ public class GamePlayScreen implements Screen {
 
     BommanGame game;
 
+    SoundController soundController;
     OrthographicCamera camera;
     OrthogonalTiledMapRenderer renderer;
 
@@ -62,6 +64,11 @@ public class GamePlayScreen implements Screen {
 
     public GamePlayScreen(BommanGame game) {
         this.game = game;
+
+        soundController = new SoundController();
+        soundController.getMenuOpenSound().play();
+        soundController.getGameMusic().play();
+        soundController.getGameMusic().setLooping(true);
 
         camera = new OrthographicCamera();
         gameMap = new MapController(camera);
@@ -111,7 +118,9 @@ public class GamePlayScreen implements Screen {
 
         if (bomman.getCurrentState() == Bomman.State.DYING) {
             if (elapsedTime % 3.0f < 0.05) {
+                soundController.getGameMusic().stop();
                 game.setScreen(new GameOverScreen(game));
+                dispose();
             }
         } else {
             bomman.update(gameMap);
@@ -157,7 +166,9 @@ public class GamePlayScreen implements Screen {
         timeLabel.setText(minutesLeft + ":" + secondsLeft);
 
         if (min == 0 && sec == 0) {
+            soundController.getGameMusic().stop();
             game.setScreen(new GameOverScreen(game));
+            dispose();
         }
     }
 
@@ -212,6 +223,7 @@ public class GamePlayScreen implements Screen {
         ArrayList<Item> usedItems = new ArrayList<>();
         for (Item item : items) {
             if (Intersector.overlaps(item.getBody(), bomman.getBody())) {
+                soundController.getItemPickUpSound().play();
                 item.activate(bomman);
                 if (item instanceof LifeItem) {
                     lifeLabel.setText("x" + bomman.getLifeLeft());
@@ -270,8 +282,8 @@ public class GamePlayScreen implements Screen {
 
     @Override
     public void dispose() {
-        game.spriteBatch.dispose();
         gameMap.getTiledMap().dispose();
+        soundController.dispose();
         playStage.dispose();
         aliveTexture.dispose();
         deadTexture.dispose();

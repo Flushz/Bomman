@@ -1,24 +1,21 @@
 package uet.thainguyen.game.screens;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import uet.thainguyen.game.BommanGame;
+import uet.thainguyen.game.controllers.SoundController;
 
 public class GameMenuScreen extends InputAdapter implements Screen {
 
     BommanGame game;
+
+    SoundController soundController;
 
     Stage menuStage;
 
@@ -28,6 +25,12 @@ public class GameMenuScreen extends InputAdapter implements Screen {
 
     public GameMenuScreen(final BommanGame game) {
         this.game = game;
+
+        soundController = new SoundController();
+        soundController.getMenuOpenSound().play();
+        soundController.getMenuScreenMusic().play();
+        soundController.getMenuScreenMusic().setLooping(true);
+
         menuStage = new Stage(new ScreenViewport());
 
         backgroundTexture = new Texture(Gdx.files.internal("ui/img/background.png"));
@@ -37,7 +40,9 @@ public class GameMenuScreen extends InputAdapter implements Screen {
         playButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                soundController.getMenuScreenMusic().stop();
                 game.setScreen(new GamePlayScreen(game));
+                dispose();
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -79,7 +84,7 @@ public class GameMenuScreen extends InputAdapter implements Screen {
 
     @Override
     public void dispose() {
-        game.spriteBatch.dispose();
+        soundController.dispose();
         backgroundTexture.dispose();
         menuStage.dispose();
     }

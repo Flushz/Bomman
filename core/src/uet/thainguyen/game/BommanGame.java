@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import uet.thainguyen.game.controllers.SoundController;
 import uet.thainguyen.game.screens.GameMenuScreen;
 
 public class BommanGame extends Game {
@@ -64,6 +65,7 @@ public class BommanGame extends Game {
 	
 	@Override
 	public void dispose () {
+		spriteBatch.dispose();
 		buttonOver.dispose();
 		buttonReleased.dispose();
 	}

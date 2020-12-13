@@ -8,6 +8,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Intersector;
 import uet.thainguyen.game.controllers.AnimationController;
 import uet.thainguyen.game.controllers.MapController;
+import uet.thainguyen.game.controllers.SoundController;
 import uet.thainguyen.game.entities.AnimatedObject;
 
 import java.util.ArrayList;
@@ -31,6 +32,8 @@ public class Bomb extends AnimatedObject {
         ON, OFF
     }
 
+    private SoundController soundController;
+
     private State currentState;
     private BlockMode currentMode;
     private int power;
@@ -40,6 +43,7 @@ public class Bomb extends AnimatedObject {
 
     public Bomb(int posX, int posY, int power) {
         super(posX, posY, BOMB_WIDTH, BOMB_HEIGHT);
+        this.soundController = new SoundController();
         this.power = power;
         this.bombAnimation = AnimationController.loadBombAnimation();
         this.currentState = State.ACTIVATED;
@@ -82,6 +86,7 @@ public class Bomb extends AnimatedObject {
     public void checkState(MapController gameMap) {
         updateElapsedTime();
         if (getElapsedTime() > BOMB_TIME_LIMIT) {
+            soundController.getBombExplodeSound().play();
             setCurrentState(State.EXPLODING);
             if (flames.isEmpty()) {
                 generateFlame(gameMap);

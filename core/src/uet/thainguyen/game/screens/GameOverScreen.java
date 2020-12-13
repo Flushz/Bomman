@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import uet.thainguyen.game.BommanGame;
+import uet.thainguyen.game.controllers.SoundController;
 
 
 public class GameOverScreen implements Screen {
@@ -20,6 +21,9 @@ public class GameOverScreen implements Screen {
     BommanGame game;
 
     Stage gameOverStage;
+
+    SoundController soundController;
+
     Label gameOverLabel;
 
     Texture gameOverBackground;
@@ -30,6 +34,10 @@ public class GameOverScreen implements Screen {
     public GameOverScreen(final BommanGame game) {
 
         this.game = game;
+
+        soundController = new SoundController();
+        soundController.getGameOverMusic().play();
+
         gameOverStage = new Stage(new ScreenViewport());
 
         gameOverBackground = new Texture(Gdx.files.internal("ui/img/game_over_background_00.png"));
@@ -46,6 +54,7 @@ public class GameOverScreen implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 game.setScreen(new GamePlayScreen(game));
+                dispose();
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -58,7 +67,9 @@ public class GameOverScreen implements Screen {
         backToMenuButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                soundController.getMenuScreenMusic().stop();
                 game.setScreen(new GameMenuScreen(game));
+                dispose();
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -127,7 +138,7 @@ public class GameOverScreen implements Screen {
 
     @Override
     public void dispose() {
-        game.spriteBatch.dispose();
+        soundController.dispose();
         gameOverStage.dispose();
     }
 }

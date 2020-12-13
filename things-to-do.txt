@@ -12,7 +12,7 @@
 [DONE]	- Game menu screen
 [DONE]	- Game over screen
 	- Game stages
-	- Sound and music
+[DONE]	- Sound and music
 [DONE]	- Funtional buttons
 	- Multiple player mode
 	- BOT and items random generating
