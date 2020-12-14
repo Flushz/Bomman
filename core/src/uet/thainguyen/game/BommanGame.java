@@ -24,10 +24,14 @@ public class BommanGame extends Game {
 	public Texture buttonReleased;
 	public TextButtonStyle buttonStyle;
 	public Label.LabelStyle labelStyle;
+
+	public boolean isMuted;
 	
 	@Override
 	public void create () {
 		spriteBatch = new SpriteBatch();
+
+		isMuted = false;
 
 		buttonOver = new Texture(Gdx.files.internal("ui/buttons/play_over.png"));
 		buttonReleased = new Texture(Gdx.files.internal("ui/buttons/play_up.png"));

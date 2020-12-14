@@ -20,6 +20,7 @@ public class GameMenuScreen extends InputAdapter implements Screen {
     Stage menuStage;
 
     Texture backgroundTexture;
+    TextButton muteButton;
     TextButton playButton;
     TextButton exitButton;
 
@@ -27,16 +28,18 @@ public class GameMenuScreen extends InputAdapter implements Screen {
         this.game = game;
 
         soundController = new SoundController();
-        soundController.getMenuOpenSound().play();
-        soundController.getMenuScreenMusic().play();
-        soundController.getMenuScreenMusic().setLooping(true);
+        if (!game.isMuted) {
+            soundController.getMenuOpenSound().play();
+            soundController.getMenuScreenMusic().play();
+            soundController.getMenuScreenMusic().setLooping(true);
+        }
 
         menuStage = new Stage(new ScreenViewport());
 
         backgroundTexture = new Texture(Gdx.files.internal("ui/img/background.png"));
 
         playButton = new TextButton("Play", game.buttonStyle);
-        playButton.setPosition(350, 180);
+        playButton.setPosition(350, 200);
         playButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -50,8 +53,29 @@ public class GameMenuScreen extends InputAdapter implements Screen {
             }
         });
 
+        muteButton = new TextButton("Music: On", game.buttonStyle);
+        muteButton.setPosition(350, 136);
+        muteButton.addListener(new InputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                if (game.isMuted) {
+                    muteButton.setText("Music: On");
+                    game.isMuted = false;
+                    soundController.getMenuScreenMusic().play();
+                } else {
+                    muteButton.setText("Music: Off");
+                    game.isMuted = true;
+                    soundController.getMenuScreenMusic().pause();
+                }
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+
         exitButton = new TextButton("Exit", game.buttonStyle);
-        exitButton.setPosition(350, 106);
+        exitButton.setPosition(350, 72);
         exitButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -64,6 +88,7 @@ public class GameMenuScreen extends InputAdapter implements Screen {
         });
 
         menuStage.addActor(playButton);
+        menuStage.addActor(muteButton);
         menuStage.addActor(exitButton);
 
         Gdx.input.setInputProcessor(menuStage);

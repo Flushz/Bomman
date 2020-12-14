@@ -112,7 +112,7 @@ public class Octopus extends Enemy {
         }
     }
 
-    private void returnToPreviousPosition() {
+    public void returnToPreviousPosition() {
         switch (getCurrentState()) {
             case WALKING_UP:
                 moveDown();

@@ -13,8 +13,11 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import uet.thainguyen.game.BommanGame;
@@ -63,16 +66,21 @@ public class GamePlayScreen implements Screen {
     Label lifeLabel;
     Texture aliveTexture;
     Texture deadTexture;
+    Label muteLabel;
 
+    private final int level;
     private float elapsedTime = 0;
 
-    public GamePlayScreen(BommanGame game, int level) {
+    public GamePlayScreen(final BommanGame game, int level) {
         this.game = game;
+        this.level = level;
 
         soundController = new SoundController();
-        soundController.getMenuOpenSound().play();
-        soundController.getGameMusic().play();
-        soundController.getGameMusic().setLooping(true);
+        if (!game.isMuted) {
+            soundController.getMenuOpenSound().play();
+            soundController.getGameMusic().play();
+            soundController.getGameMusic().setLooping(true);
+        }
 
         camera = new OrthographicCamera();
         gameMap = new MapController(camera, level);
@@ -128,11 +136,40 @@ public class GamePlayScreen implements Screen {
         timeLabel = new Label("Time: ", game.labelStyle);
         timeLabel.setPosition(200, 440, Align.center);
 
+        muteLabel = new Label("", game.labelStyle);
+        if (game.isMuted) {
+            muteLabel.setText("Music: Off");
+        } else {
+            muteLabel.setText("Music: On");
+        }
+        muteLabel.setPosition(400, 440, Align.center);
+        muteLabel.addListener(new InputListener(){
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                if (game.isMuted) {
+                    muteLabel.setText("Music: On");
+                    game.isMuted = false;
+                    soundController.getMenuScreenMusic().play();
+                } else {
+                    muteLabel.setText("Music: Off");
+                    game.isMuted = true;
+                    soundController.getMenuScreenMusic().pause();
+                }
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+
         deadTexture = new Texture(Gdx.files.internal("ui/img/dead_icon.png"));
         aliveTexture = new Texture(Gdx.files.internal("ui/img/alive_icon.png"));
 
         playStage.addActor(lifeLabel);
         playStage.addActor(timeLabel);
+        playStage.addActor(muteLabel);
+
+        Gdx.input.setInputProcessor(playStage);
     }
 
     @Override
@@ -145,7 +182,9 @@ public class GamePlayScreen implements Screen {
 
         if (bomman.getCurrentState() == Bomman.State.DYING) {
             if (elapsedTime % 3.0f < 0.05) {
-                soundController.getGameMusic().stop();
+                if (!game.isMuted) {
+                    soundController.getGameMusic().stop();
+                }
                 game.setScreen(new GameOverScreen(game));
                 dispose();
             }
@@ -194,7 +233,9 @@ public class GamePlayScreen implements Screen {
         timeLabel.setText(minutesLeft + ":" + secondsLeft);
 
         if (min == 0 && sec == 0) {
-            soundController.getGameMusic().stop();
+            if (!game.isMuted) {
+                soundController.getGameMusic().stop();
+            }
             game.setScreen(new GameOverScreen(game));
             dispose();
         }
@@ -204,7 +245,10 @@ public class GamePlayScreen implements Screen {
 
         MapObjects collisionObjects = collisionLayer.getObjects();
 
+        checkCollisionPlayerAndPortal();
+
         checkCollisionPlayerAndMap(collisionObjects);
+
         if (!bombs.isEmpty()) {
             for (Bomb bomb : bombs) {
                 if (bomb.getCurrentState() == Bomb.State.EXPLODING) {
@@ -224,6 +268,8 @@ public class GamePlayScreen implements Screen {
             }
         }
 
+        checkCollisionBombAndEnemies();
+
         checkCollisionPlayerAndItems();
 
         checkCollisionPlayerAndEnemies();
@@ -233,6 +279,19 @@ public class GamePlayScreen implements Screen {
         for(RectangleMapObject collisionObject : collisionObjects.getByType(RectangleMapObject.class)) {
             if (Intersector.overlaps(collisionObject.getRectangle(), bomman.getBody())) {
                 bomman.returnPreviousPos(collisionObject.getRectangle());
+            }
+        }
+    }
+
+    public void checkCollisionPlayerAndPortal() {
+        if (Intersector.overlaps(bomman.getBody(), portal.getBody())) {
+            if (enemies.isEmpty()) {
+                if (this.level == 2) {
+                    game.setScreen(new WinnerScreen(game));
+                    dispose();
+                } else {
+                    game.setScreen(new GamePlayScreen(game, this.level + 1));
+                }
             }
         }
     }
@@ -263,6 +322,18 @@ public class GamePlayScreen implements Screen {
         }
         items.removeAll(usedItems);
         usedItems.clear();
+    }
+
+    public void checkCollisionBombAndEnemies() {
+        for (Enemy enemy : enemies) {
+            for (Bomb bomb : bombs) {
+                if (Intersector.overlaps(bomb.getBody(), enemy.getBody())) {
+                    if (enemy instanceof Octopus) {
+                        ((Octopus) enemy).returnToPreviousPosition();
+                    }
+                }
+            }
+        }
     }
 
     public void checkCollisionFlamesAndPlayer(Flame flame) {
