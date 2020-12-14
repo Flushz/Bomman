@@ -22,6 +22,12 @@ public class MapController {
     private static final float PLAYER_RESPAWN_X_LEVEL_2 = 64;
     private static final float PLAYER_RESPAWN_Y_LEVEL_2 = 320;
 
+    public static final float PORTAL_LEVEL_1_X = 384;
+    public static final float PORTAL_LEVEL_1_Y = 32;
+
+    public static final float PORTAL_LEVEL_2_X = 480;
+    public static final float PORTAL_LEVEL_2_Y = 64;
+
     public static final float HARE1_LEVEL_1_X = 64;
     public static final float HARE1_LEVEL_1_Y = 32;
 
@@ -31,29 +37,26 @@ public class MapController {
     public static final float HARE3_LEVEL_1_X = 384;
     public static final float HARE3_LEVEL_1_Y = 352;
 
-    public static final float HARE1_LEVEL_2_X = 64;
-    public static final float HARE1_LEVEL_2_Y = 320;
+    public static final float HARE1_LEVEL_2_X = 224;
+    public static final float HARE1_LEVEL_2_Y = 32;
 
-    public static final float HARE2_LEVEL_2_X = 64;
-    public static final float HARE2_LEVEL_2_Y = 320;
-
-    public static final float HARE3_LEVEL_2_X = 64;
-    public static final float HARE3_LEVEL_2_Y = 320;
+    public static final float HARE2_LEVEL_2_X = 416;
+    public static final float HARE2_LEVEL_2_Y = 160;
 
     public static final float OCTOPUS1_LEVEL_1_X = 64;
     public static final float OCTOPUS1_LEVEL_1_Y = 224;
 
     public static final float OCTOPUS2_LEVEL_1_X = 64;
     public static final float OCTOPUS2_LEVEL_1_Y = 32;
-    
+
     public static final float OCTOPUS1_LEVEL_2_X = 64;
-    public static final float OCTOPUS1_LEVEL_2_Y = 320;
+    public static final float OCTOPUS1_LEVEL_2_Y = 32;
 
-    public static final float OCTOPUS2_LEVEL_2_X = 64;
-    public static final float OCTOPUS2_LEVEL_2_Y = 320;
+    public static final float OCTOPUS2_LEVEL_2_X = 320;
+    public static final float OCTOPUS2_LEVEL_2_Y = 64;
 
-    public static final float OCTOPUS3_LEVEL_2_X = 64;
-    public static final float OCTOPUS3_LEVEL_2_Y = 320;
+    public static final float OCTOPUS3_LEVEL_2_X = 448;
+    public static final float OCTOPUS3_LEVEL_2_Y = 352;
 
     private TiledMap tiledMap;
     private OrthographicCamera camera;

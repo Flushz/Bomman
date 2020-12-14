@@ -27,6 +27,7 @@ import uet.thainguyen.game.entities.explosion.Flame;
 import uet.thainguyen.game.entities.items.*;
 import uet.thainguyen.game.entities.statics.BrickLayer;
 import uet.thainguyen.game.entities.statics.GrassLayer;
+import uet.thainguyen.game.entities.statics.Portal;
 import uet.thainguyen.game.entities.statics.WallLayer;
 import uet.thainguyen.game.entities.dynamics.Hare;
 import uet.thainguyen.game.entities.dynamics.Bomman;
@@ -49,6 +50,8 @@ public class GamePlayScreen implements Screen {
     GrassLayer grassLayer;
     WallLayer wallLayer;
     BrickLayer brickLayer;
+
+    Portal portal;
 
     Bomman bomman;
     ArrayList<Enemy> enemies;
@@ -95,6 +98,8 @@ public class GamePlayScreen implements Screen {
         enemies = new ArrayList<>();
         switch (level) {
             case 1:
+                portal = new Portal(MapController.PORTAL_LEVEL_1_X, MapController.PORTAL_LEVEL_1_Y);
+
                 enemies.add(new Hare(MapController.HARE1_LEVEL_1_X,MapController.HARE1_LEVEL_1_Y));
                 enemies.add(new Hare(MapController.HARE2_LEVEL_1_X,MapController.HARE2_LEVEL_1_Y));
                 enemies.add(new Hare(MapController.HARE3_LEVEL_1_X,MapController.HARE3_LEVEL_1_Y));
@@ -103,9 +108,10 @@ public class GamePlayScreen implements Screen {
                 enemies.add(new Octopus(MapController.OCTOPUS2_LEVEL_1_X,MapController.OCTOPUS2_LEVEL_1_Y));
                 break;
             case 2:
+                portal = new Portal(MapController.PORTAL_LEVEL_2_X, MapController.PORTAL_LEVEL_2_Y);
+
                 enemies.add(new Hare(MapController.HARE1_LEVEL_2_X,MapController.HARE1_LEVEL_2_Y));
                 enemies.add(new Hare(MapController.HARE2_LEVEL_2_X,MapController.HARE2_LEVEL_2_Y));
-                enemies.add(new Hare(MapController.HARE3_LEVEL_2_X,MapController.HARE3_LEVEL_2_Y));
 
                 enemies.add(new Octopus(MapController.OCTOPUS1_LEVEL_2_X,MapController.OCTOPUS1_LEVEL_2_Y));
                 enemies.add(new Octopus(MapController.OCTOPUS2_LEVEL_2_X,MapController.OCTOPUS2_LEVEL_2_Y));
@@ -113,7 +119,6 @@ public class GamePlayScreen implements Screen {
                 break;
 
         }
-
 
         playStage = new Stage(new ScreenViewport());
 
@@ -128,7 +133,6 @@ public class GamePlayScreen implements Screen {
 
         playStage.addActor(lifeLabel);
         playStage.addActor(timeLabel);
-
     }
 
     @Override
@@ -156,6 +160,7 @@ public class GamePlayScreen implements Screen {
 
         renderer.getBatch().begin();
         renderer.renderTileLayer(grassLayer.getStaticLayer());
+        portal.render((SpriteBatch) renderer.getBatch());
         for (Item item : items) {
             item.render((SpriteBatch) renderer.getBatch());
         }
